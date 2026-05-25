@@ -9,21 +9,48 @@
     <p class="lead">Sistema integral de administración y facturación</p>
     
     <div class="row mt-5">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <div class="card shadow-sm h-100 border-0">
                 <div class="card-body">
-                    <h3 class="card-title text-success"><i class="bi bi-person-badge"></i> Propietarios</h3>
-                    <p class="card-text text-muted">Gestión de propietarios, registro y actualización de datos personales y contactos.</p>
-                    <a asp-page="/Propietarios/Create" class="btn btn-outline-success"><i class="bi bi-plus-circle"></i> Nuevo Propietario</a>
+                    <h3 class="card-title text-success"><i class="bi bi-people"></i> Propietarios</h3>
+                    <p class="card-text text-muted">Gestión de propietarios, registro y actualización de datos.</p>
+                    <a asp-page="/Propietarios/Index" class="btn btn-outline-success"><i class="bi bi-arrow-right-circle"></i> Ingresar</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <div class="card shadow-sm h-100 border-0">
                 <div class="card-body">
-                    <h3 class="card-title text-warning"><i class="bi bi-cash-coin"></i> Facturación</h3>
-                    <p class="card-text text-muted">Emisión de facturas y aplicación de beneficios de clientes frecuentes.</p>
-                    <a asp-page="/Facturacion/EmitirFactura" class="btn btn-outline-warning"><i class="bi bi-receipt"></i> Módulo de Facturación</a>
+                    <h3 class="card-title text-info"><i class="bi bi-heptagon"></i> Caballos</h3>
+                    <p class="card-text text-muted">Registro y control veterinario de los caballos del hipódromo.</p>
+                    <a asp-page="/Caballos/Index" class="btn btn-outline-info"><i class="bi bi-arrow-right-circle"></i> Ingresar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="card-title text-primary"><i class="bi bi-calendar-event"></i> Eventos</h3>
+                    <p class="card-text text-muted">Programación de carreras y gestión de resultados.</p>
+                    <a asp-page="/Eventos/Index" class="btn btn-outline-primary"><i class="bi bi-arrow-right-circle"></i> Ingresar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3 mt-3">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="card-title text-danger"><i class="bi bi-house-door-fill"></i> Establos</h3>
+                    <p class="card-text text-muted">Control de capacidad y mantenimiento de establos.</p>
+                    <a asp-page="/Establos/Index" class="btn btn-outline-danger"><i class="bi bi-arrow-right-circle"></i> Ingresar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3 mt-3">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="card-title text-warning"><i class="bi bi-receipt"></i> Facturación</h3>
+                    <p class="card-text text-muted">Emisión de facturas y beneficios de clientes frecuentes.</p>
+                    <a asp-page="/Facturacion/EmitirFactura" class="btn btn-outline-warning"><i class="bi bi-arrow-right-circle"></i> Ingresar</a>
                 </div>
             </div>
         </div>

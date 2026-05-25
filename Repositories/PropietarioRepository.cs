@@ -13,6 +13,17 @@ namespace HipodromoNacional.Repositories
             _db = db;
         }
 
+        public async Task<IEnumerable<PropietarioDTO>> ObtenerTodosAsync()
+        {
+            // La lectura puede hacerse directa o con funciones/SPs. Usaremos SQL directo por simplicidad en la lectura.
+            return await _db.QueryAsync<PropietarioDTO>("SELECT id_propietario AS IdPropietario, cedula AS Cedula, nombre AS Nombre, apellido1 AS Apellido1, apellido2 AS Apellido2, estado AS Estado FROM propietario ORDER BY id_propietario");
+        }
+
+        public async Task<PropietarioDTO> ObtenerPorIdAsync(int id)
+        {
+            return await _db.QueryFirstOrDefaultAsync<PropietarioDTO>("SELECT id_propietario AS IdPropietario, cedula AS Cedula, nombre AS Nombre, apellido1 AS Apellido1, apellido2 AS Apellido2, estado AS Estado FROM propietario WHERE id_propietario = @Id", new { Id = id });
+        }
+
         public async Task<int> CrearPropietarioAsync(PropietarioDTO p, string[] telefonos, string[] tiposTelefonos, string[] correos, string[] tiposCorreos)
         {
             var parameters = new DynamicParameters();

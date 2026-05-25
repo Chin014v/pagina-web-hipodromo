@@ -1,0 +1,47 @@
+@page
+@model HipodromoNacional.Pages.Establos.CreateModel
+@{
+    ViewData["Title"] = "Registrar Establo";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-house-add"></i> Registrar Nuevo Establo</h4>
+    </div>
+    <div class="card-body">
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Código</label>
+                    <input asp-for="Establo.Codigo" class="form-control" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ubicación</label>
+                    <input asp-for="Establo.Ubicacion" class="form-control" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Capacidad (Número de caballos)</label>
+                    <input asp-for="Establo.Capacidad" type="number" class="form-control" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Establo.Estado" class="form-select" required>
+                        <option value="Disponible">Disponible</option>
+                        <option value="Lleno">Lleno</option>
+                        <option value="En Mantenimiento">En Mantenimiento</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Establo</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

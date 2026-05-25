@@ -1,0 +1,43 @@
+@page "{id:int}"
+@model HipodromoNacional.Pages.Propietarios.EditModel
+@{
+    ViewData["Title"] = "Editar Propietario";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Editar Propietario</h4>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <input type="hidden" asp-for="Propietario.IdPropietario" />
+
+            <div class="alert alert-info">
+                Según las reglas del proyecto (Punto 7), se permite modificar al menos 3 campos. 
+                Aquí modificaremos: <strong>Nombre, Primer Apellido y Estado</strong>.
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input asp-for="Propietario.Nombre" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Primer Apellido</label>
+                <input asp-for="Propietario.Apellido1" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Estado</label>
+                <select asp-for="Propietario.Estado" class="form-select" required>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Actualizar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

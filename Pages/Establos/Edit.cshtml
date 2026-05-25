@@ -1,0 +1,44 @@
+@page "{id:int}"
+@model HipodromoNacional.Pages.Establos.EditModel
+@{
+    ViewData["Title"] = "Editar Establo";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Editar Establo</h4>
+    </div>
+    <div class="card-body">
+        
+        <div class="alert alert-info">
+            Según las reglas del proyecto (Punto 7), modificaremos al menos 3 campos: <strong>Ubicación, Capacidad y Estado</strong>.
+        </div>
+
+        <form method="post">
+            <input type="hidden" asp-for="Establo.IdEstablo" />
+
+            <div class="mb-3">
+                <label class="form-label">Ubicación</label>
+                <input asp-for="Establo.Ubicacion" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Capacidad</label>
+                <input asp-for="Establo.Capacidad" type="number" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Estado</label>
+                <select asp-for="Establo.Estado" class="form-select" required>
+                    <option value="Disponible">Disponible</option>
+                    <option value="Lleno">Lleno</option>
+                    <option value="En Mantenimiento">En Mantenimiento</option>
+                </select>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Actualizar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

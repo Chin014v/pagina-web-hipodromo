@@ -11,6 +11,9 @@ var connectionString = builder.Configuration.GetConnectionString("PostgresConnec
 builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(connectionString));
 
 builder.Services.AddScoped<IPropietarioRepository, PropietarioRepository>();
+builder.Services.AddScoped<ICaballoRepository, CaballoRepository>();
+builder.Services.AddScoped<IEventoRepository, EventoRepository>();
+builder.Services.AddScoped<IEstabloRepository, EstabloRepository>();
 builder.Services.AddScoped<IFacturacionRepository, FacturacionRepository>();
 
 var app = builder.Build();
