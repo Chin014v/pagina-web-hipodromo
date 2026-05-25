@@ -1,0 +1,112 @@
+@page
+@model HipodromoNacional.Pages.Facturacion.EmitirFacturaModel
+@{
+    ViewData["Title"] = "Emitir Factura";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Emisión de Factura</h4>
+        <form method="post" asp-page-handler="CalcularFrecuentes" class="m-0">
+            <button type="submit" class="btn btn-light btn-sm text-success fw-bold">
+                <i class="bi bi-stars"></i> Aplicar Descuentos Frecuentes
+            </button>
+        </form>
+    </div>
+    <div class="card-body">
+        <form id="facturaForm" method="post">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Inscripción (Precio Base)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₡</span>
+                        <input type="number" id="txtSubtotal" name="Subtotal" class="form-control calc-trigger" value="15000" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label>Descuento Aplicable (%)</label>
+                    <input type="number" id="txtDescuento" name="DescuentoPorcentaje" class="form-control calc-trigger" value="0" />
+                </div>
+            </div>
+
+            <div class="bg-light p-3 rounded border">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <strong id="lblSubtotal">₡15,000.00</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2 text-danger">
+                    <span>Descuento:</span>
+                    <strong id="lblDescuento">- ₡0.00</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Base Imponible:</span>
+                    <strong id="lblBase">₡15,000.00</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>IVA (13%):</span>
+                    <strong id="lblIVA">₡1,950.00</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2 text-warning">
+                    <span>Comisión Administrativa (5%):</span>
+                    <strong id="lblComision">₡750.00</strong>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between">
+                    <h5 class="mb-0">Total a Pagar:</h5>
+                    <h4 class="mb-0 text-primary" id="lblTotal">₡17,700.00</h4>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success btn-lg w-100">Emitir Factura</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const IVA_RATE = 0.13;
+    const COMISION_RATE = 0.05;
+
+    function calcularFactura() {
+        const subtotal = parseFloat(document.getElementById('txtSubtotal').value) || 0;
+        const descPorcentaje = parseFloat(document.getElementById('txtDescuento').value) || 0;
+
+        const descuentoMonto = subtotal * (descPorcentaje / 100);
+        const baseImponible = subtotal - descuentoMonto;
+        const iva = baseImponible * IVA_RATE;
+        const comision = subtotal * COMISION_RATE; 
+        const total = baseImponible + iva + comision;
+
+        const formatoColon = new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' });
+
+        document.getElementById('lblSubtotal').innerText = formatoColon.format(subtotal);
+        document.getElementById('lblDescuento').innerText = "- " + formatoColon.format(descuentoMonto);
+        document.getElementById('lblBase').innerText = formatoColon.format(baseImponible);
+        document.getElementById('lblIVA').innerText = formatoColon.format(iva);
+        document.getElementById('lblComision').innerText = formatoColon.format(comision);
+        document.getElementById('lblTotal').innerText = formatoColon.format(total);
+    }
+
+    document.querySelectorAll('.calc-trigger').forEach(el => {
+        el.addEventListener('input', calcularFactura);
+    });
+</script>
+}
