@@ -1,6 +1,6 @@
 using System.Data;
 using Npgsql;
-using HipodromoNacional.Repositories;
+using HipodromoNacional.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,13 +10,15 @@ builder.Services.AddRazorPages();
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(connectionString));
 
-builder.Services.AddScoped<IPropietarioRepository, PropietarioRepository>();
-builder.Services.AddScoped<ICaballoRepository, CaballoRepository>();
-builder.Services.AddScoped<IEventoRepository, EventoRepository>();
-builder.Services.AddScoped<IEstabloRepository, EstabloRepository>();
-builder.Services.AddScoped<IFacturacionRepository, FacturacionRepository>();
+builder.Services.AddScoped<IPropietarioRepositorio, PropietarioRepositorio>();
+builder.Services.AddScoped<ICaballoRepositorio, CaballoRepositorio>();
+builder.Services.AddScoped<IEventoRepositorio, EventoRepositorio>();
+builder.Services.AddScoped<IEstabloRepositorio, EstabloRepositorio>();
+builder.Services.AddScoped<IFacturacionRepositorio, FacturacionRepositorio>();
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -37,3 +39,4 @@ app.MapRazorPages()
    .WithStaticAssets();
 
 app.Run();
+

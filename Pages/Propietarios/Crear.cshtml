@@ -1,0 +1,146 @@
+@page
+@model HipodromoNacional.Pages.Propietarios.CrearModel
+@{
+    ViewData["Title"] = "Crear Propietario";
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Registrar Nuevo Propietario</h4>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <h5 class="text-secondary border-bottom pb-2">Datos Personales</h5>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Cédula</label>
+                    <input asp-for="Propietario.Cedula" class="form-control" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Nombre</label>
+                    <input asp-for="Propietario.Nombre" class="form-control" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Primer Apellido</label>
+                    <input asp-for="Propietario.Apellido1" class="form-control" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Segundo Apellido</label>
+                    <input asp-for="Propietario.Apellido2" class="form-control" />
+                </div>
+            </div>
+
+            <h5 class="text-secondary border-bottom pb-2 mt-4">Dirección Anidada</h5>
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label class="form-label">País</label>
+                    <select id="ddlPais" class="form-select" required>
+                        <option value="">Seleccione...</option>
+                        <option value="1">Costa Rica</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Provincia</label>
+                    <select id="ddlProvincia" class="form-select" required>
+                        <option value="">Seleccione...</option>
+                        <option value="1">San José</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Cantón</label>
+                    <select id="ddlCanton" class="form-select" required>
+                        <option value="">Seleccione...</option>
+                        <option value="1">Central</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Distrito</label>
+                    <select id="ddlDistrito" class="form-select" required>
+                        <option value="">Seleccione...</option>
+                        <option value="1">Mata Redonda</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Barrio</label>
+                    <!-- For simplicity using an input or a select mapped to IdBarrio -->
+                    <input type="number" asp-for="Propietario.IdBarrio" class="form-control" value="1" required />
+                </div>
+            </div>
+
+            <h5 class="text-secondary border-bottom pb-2 mt-4">Información de Contacto</h5>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label d-flex justify-content-between">
+                        Teléfonos <button type="button" class="btn btn-sm btn-outline-success" onclick="addTelefono()">+ Agregar</button>
+                    </label>
+                    <div id="telefonosContainer">
+                        <div class="input-group mb-2">
+                            <input type="text" name="Telefonos" class="form-control" placeholder="Número" required />
+                            <select name="TiposTelefonos" class="form-select" required>
+                                <option value="Personal">Personal</option>
+                                <option value="Trabajo">Trabajo</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label d-flex justify-content-between">
+                        Correos <button type="button" class="btn btn-sm btn-outline-success" onclick="addCorreo()">+ Agregar</button>
+                    </label>
+                    <div id="correosContainer">
+                        <div class="input-group mb-2">
+                            <input type="email" name="Correos" class="form-control" placeholder="Correo" required />
+                            <select name="TiposCorreos" class="form-select" required>
+                                <option value="Personal">Personal</option>
+                                <option value="Trabajo">Trabajo</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Propietario</button>
+            <a href="/" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function addTelefono() {
+        const template = `
+            <div class="input-group mb-2">
+                <input type="text" name="Telefonos" class="form-control" placeholder="Número" required />
+                <select name="TiposTelefonos" class="form-select" required>
+                    <option value="Personal">Personal</option><option value="Trabajo">Trabajo</option><option value="Otro">Otro</option>
+                </select>
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">X</button>
+            </div>`;
+        document.getElementById('telefonosContainer').insertAdjacentHTML('beforeend', template);
+    }
+
+    function addCorreo() {
+        const template = `
+            <div class="input-group mb-2">
+                <input type="email" name="Correos" class="form-control" placeholder="Correo" required />
+                <select name="TiposCorreos" class="form-select" required>
+                    <option value="Personal">Personal</option><option value="Trabajo">Trabajo</option><option value="Otro">Otro</option>
+                </select>
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">X</button>
+            </div>`;
+        document.getElementById('correosContainer').insertAdjacentHTML('beforeend', template);
+    }
+</script>
+}

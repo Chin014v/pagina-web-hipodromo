@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using HipodromoNacional.Models;
-using HipodromoNacional.Repositories;
+using HipodromoNacional.Modelos;
+using HipodromoNacional.Repositorios;
 
 namespace HipodromoNacional.Pages.Establos
 {
     public class IndexModel : PageModel
     {
-        private readonly IEstabloRepository _repo;
+        private readonly IEstabloRepositorio _repo;
 
-        public IndexModel(IEstabloRepository repo)
+        public IndexModel(IEstabloRepositorio repo)
         {
             _repo = repo;
         }

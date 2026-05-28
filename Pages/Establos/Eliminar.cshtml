@@ -1,0 +1,33 @@
+@page "{id:int}"
+@model HipodromoNacional.Pages.Establos.EliminarModel
+@{
+    ViewData["Title"] = "Eliminar Establo";
+}
+
+<div class="card shadow-sm mt-4 border-danger">
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Confirmar Eliminación</h4>
+    </div>
+    <div class="card-body text-center py-5">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-start">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <h5 class="text-danger">¿Estás seguro que deseas eliminar permanentemente este establo?</h5>
+        <h3 class="mt-3">Establo: @Model.Establo.Codigo</h3>
+        <p class="text-muted">Ubicación: @Model.Establo.Ubicacion</p>
+        
+        <div class="alert alert-warning mt-4 text-start d-inline-block">
+            <strong>Advertencia:</strong> Esta acción invocará el procedimiento almacenado <code>sp_eliminar_establo</code> y no se puede deshacer.
+        </div>
+
+        <form method="post" class="mt-4">
+            <input type="hidden" asp-for="Establo.IdEstablo" />
+            <button type="submit" class="btn btn-danger btn-lg"><i class="bi bi-trash"></i> Sí, Eliminar</button>
+            <a asp-page="./Index" class="btn btn-secondary btn-lg ms-2">Cancelar</a>
+        </form>
+    </div>
+</div>

@@ -22,7 +22,7 @@
 
 <div class="card shadow-sm mt-4">
     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Emisión de Factura</h4>
+        <h4 class="mb-0"><i class="bi bi-receipt"></i> Emisión de Factura</h4>
         <form method="post" asp-page-handler="CalcularFrecuentes" class="m-0">
             <button type="submit" class="btn btn-light btn-sm text-success fw-bold">
                 <i class="bi bi-stars"></i> Aplicar Descuentos Frecuentes
@@ -31,50 +31,89 @@
     </div>
     <div class="card-body">
         <form id="facturaForm" method="post">
+            <h5 class="text-secondary border-bottom pb-2 mb-3">Información del Cliente y Carrera</h5>
+            
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label>Inscripción (Precio Base)</label>
-                    <div class="input-group">
-                        <span class="input-group-text">₡</span>
-                        <input type="number" id="txtSubtotal" name="Subtotal" class="form-control calc-trigger" value="15000" />
-                    </div>
+                    <label class="form-label">Propietario / Cliente</label>
+                    <select asp-for="IdPropietario" class="form-select calc-trigger" required>
+                        <option value="">Seleccione el propietario...</option>
+                        @foreach (var p in Model.Propietarios)
+                        {
+                            <option value="@p.IdPropietario" data-descuento="@(p.DescuentoProximaFactura ? "10" : "0")">
+                                @p.Nombre @p.Apellido1 (@p.Cedula) @(p.DescuentoProximaFactura ? "★ (Descuento 10% Disponible)" : "")
+                            </option>
+                        }
+                    </select>
                 </div>
                 <div class="col-md-6">
-                    <label>Descuento Aplicable (%)</label>
-                    <input type="number" id="txtDescuento" name="DescuentoPorcentaje" class="form-control calc-trigger" value="0" />
+                    <label class="form-label">Evento / Carrera</label>
+                    <select asp-for="IdEvento" class="form-select calc-trigger" required>
+                        <option value="">Seleccione el evento...</option>
+                        @foreach (var e in Model.Eventos)
+                        {
+                            <option value="@e.IdEvento" data-precio="@e.PrecioInscripcion">
+                                @e.Nombre - Código: @e.CodigoEvento (Precio Base: ₡@e.PrecioInscripcion.ToString("N2"))
+                            </option>
+                        }
+                    </select>
                 </div>
             </div>
 
-            <div class="bg-light p-3 rounded border">
+            <h5 class="text-secondary border-bottom pb-2 mt-4 mb-3">Información de Pago</h5>
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Método de Pago</label>
+                    <select asp-for="IdMetodoPago" class="form-select">
+                        <option value="">-- Sin Pago (Queda Pendiente) --</option>
+                        <option value="1">Sinpe Móvil</option>
+                        <option value="2">Tarjeta de Crédito</option>
+                        <option value="3">Transferencia Bancaria</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Referencia de Pago</label>
+                    <input asp-for="Referencia" class="form-control" placeholder="Ej. Transacción #12345" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Número de Comprobante</label>
+                    <input asp-for="NumeroComprobante" class="form-control" placeholder="Ej. SINPE-84729" />
+                </div>
+            </div>
+
+            <h5 class="text-secondary border-bottom pb-2 mt-4 mb-3">Cálculo de Precios Estimados</h5>
+            <div class="bg-light p-3 rounded border mb-4">
                 <div class="d-flex justify-content-between mb-2">
-                    <span>Subtotal:</span>
-                    <strong id="lblSubtotal">₡15,000.00</strong>
+                    <span>Subtotal de Inscripción:</span>
+                    <strong id="lblSubtotal">₡0.00</strong>
                 </div>
                 <div class="d-flex justify-content-between mb-2 text-danger">
-                    <span>Descuento:</span>
+                    <span>Descuento de Cliente Frecuente:</span>
                     <strong id="lblDescuento">- ₡0.00</strong>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                     <span>Base Imponible:</span>
-                    <strong id="lblBase">₡15,000.00</strong>
+                    <strong id="lblBase">₡0.00</strong>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                     <span>IVA (13%):</span>
-                    <strong id="lblIVA">₡1,950.00</strong>
+                    <strong id="lblIVA">₡0.00</strong>
                 </div>
                 <div class="d-flex justify-content-between mb-2 text-warning">
                     <span>Comisión Administrativa (5%):</span>
-                    <strong id="lblComision">₡750.00</strong>
+                    <strong id="lblComision">₡0.00</strong>
                 </div>
                 <hr />
                 <div class="d-flex justify-content-between">
-                    <h5 class="mb-0">Total a Pagar:</h5>
-                    <h4 class="mb-0 text-primary" id="lblTotal">₡17,700.00</h4>
+                    <h5 class="mb-0">Total estimado a Pagar:</h5>
+                    <h4 class="mb-0 text-primary" id="lblTotal">₡0.00</h4>
                 </div>
             </div>
 
-            <div class="mt-4">
-                <button type="submit" class="btn btn-success btn-lg w-100">Emitir Factura</button>
+            <div>
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    <i class="bi bi-receipt-cutoff"></i> Registrar y Emitir Factura Oficial
+                </button>
             </div>
         </form>
     </div>
@@ -86,8 +125,19 @@
     const COMISION_RATE = 0.05;
 
     function calcularFactura() {
-        const subtotal = parseFloat(document.getElementById('txtSubtotal').value) || 0;
-        const descPorcentaje = parseFloat(document.getElementById('txtDescuento').value) || 0;
+        const ddlPropietario = document.getElementById('IdPropietario');
+        const ddlEvento = document.getElementById('IdEvento');
+
+        if (!ddlPropietario || !ddlEvento) return;
+
+        const optPropietario = ddlPropietario.options[ddlPropietario.selectedIndex];
+        const optEvento = ddlEvento.options[ddlEvento.selectedIndex];
+
+        // Obtener descuento del propietario seleccionado
+        const descPorcentaje = optPropietario && optPropietario.value ? parseFloat(optPropietario.getAttribute('data-descuento')) || 0 : 0;
+        
+        // Obtener precio del evento seleccionado
+        const subtotal = optEvento && optEvento.value ? parseFloat(optEvento.getAttribute('data-precio')) || 0 : 0;
 
         const descuentoMonto = subtotal * (descPorcentaje / 100);
         const baseImponible = subtotal - descuentoMonto;
@@ -98,7 +148,7 @@
         const formatoColon = new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' });
 
         document.getElementById('lblSubtotal').innerText = formatoColon.format(subtotal);
-        document.getElementById('lblDescuento').innerText = "- " + formatoColon.format(descuentoMonto);
+        document.getElementById('lblDescuento').innerText = "- " + formatoColon.format(descuentoMonto) + " (" + descPorcentaje + "%)";
         document.getElementById('lblBase').innerText = formatoColon.format(baseImponible);
         document.getElementById('lblIVA').innerText = formatoColon.format(iva);
         document.getElementById('lblComision').innerText = formatoColon.format(comision);
@@ -106,7 +156,7 @@
     }
 
     document.querySelectorAll('.calc-trigger').forEach(el => {
-        el.addEventListener('input', calcularFactura);
+        el.addEventListener('change', calcularFactura);
     });
 </script>
 }
