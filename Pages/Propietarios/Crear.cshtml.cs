@@ -27,6 +27,12 @@ namespace HipodromoNacional.Pages.Propietarios
         public PropietarioDTO Propietario { get; set; } = new PropietarioDTO();
 
         [BindProperty]
+        public int IdDistrito { get; set; }
+
+        [BindProperty]
+        public string? NuevoBarrio { get; set; }
+
+        [BindProperty]
         public List<string> Telefonos { get; set; } = new List<string>();
         [BindProperty]
         public List<string> TiposTelefonos { get; set; } = new List<string>();
@@ -70,6 +76,13 @@ namespace HipodromoNacional.Pages.Propietarios
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Propietario.IdBarrio");
+
+            if (Propietario.IdBarrio == 0 && string.IsNullOrWhiteSpace(NuevoBarrio))
+            {
+                ModelState.AddModelError("NuevoBarrio", "Debe seleccionar un barrio o escribir uno nuevo.");
+            }
+
             if (!ModelState.IsValid)
             {
                 var list = await _db.QueryAsync<dynamic>("SELECT id_pais AS id, nombre_pais AS nombre FROM pais ORDER BY nombre_pais");
@@ -79,6 +92,25 @@ namespace HipodromoNacional.Pages.Propietarios
 
             try
             {
+                if (Propietario.IdBarrio == 0 && !string.IsNullOrWhiteSpace(NuevoBarrio))
+                {
+                    var existingId = await _db.QueryFirstOrDefaultAsync<int?>(
+                        "SELECT id_barrio FROM barrio WHERE LOWER(trim(nombre_barrio)) = LOWER(trim(@Nombre)) AND id_distrito = @DistritoId",
+                        new { Nombre = NuevoBarrio, DistritoId = IdDistrito });
+
+                    if (existingId.HasValue)
+                    {
+                        Propietario.IdBarrio = existingId.Value;
+                    }
+                    else
+                    {
+                        var newId = await _db.QuerySingleAsync<int>(
+                            "INSERT INTO barrio (nombre_barrio, id_distrito) VALUES (@Nombre, @DistritoId) RETURNING id_barrio",
+                            new { Nombre = NuevoBarrio.Trim(), DistritoId = IdDistrito });
+                        Propietario.IdBarrio = newId;
+                    }
+                }
+
                 await _repo.CrearPropietarioAsync(
                     Propietario, 
                     Telefonos.ToArray(), 

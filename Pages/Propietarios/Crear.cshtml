@@ -41,7 +41,7 @@
 
             <h5 class="text-secondary border-bottom pb-2 mt-4">Dirección Anidada</h5>
             <div class="row mb-3">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">País</label>
                     <select id="ddlPais" class="form-select" required>
                         <option value="">Seleccione...</option>
@@ -57,7 +57,7 @@
                         <option value="">Seleccione...</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Cantón</label>
                     <select id="ddlCanton" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Distrito</label>
-                    <select id="ddlDistrito" class="form-select" required disabled>
+                    <select id="ddlDistrito" asp-for="IdDistrito" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
                     </select>
                 </div>
@@ -74,7 +74,11 @@
                     <select id="ddlBarrio" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
                     </select>
-                    <input type="hidden" id="hdnIdBarrio" asp-for="Propietario.IdBarrio" required />
+                    <input type="hidden" id="hdnIdBarrio" asp-for="Propietario.IdBarrio" />
+                </div>
+                <div class="col-md-2" id="divNuevoBarrio" style="display: none;">
+                    <label class="form-label">Escribir Barrio</label>
+                    <input type="text" id="txtNuevoBarrio" asp-for="NuevoBarrio" class="form-control" placeholder="Nombre de barrio..." />
                 </div>
             </div>
 
@@ -228,6 +232,13 @@
         ddlDistrito.addEventListener("change", async function () {
             const distrId = this.value;
             clearAndDisable([ddlBarrio]);
+            
+            const divNuevoBarrio = document.getElementById("divNuevoBarrio");
+            const txtNuevoBarrio = document.getElementById("txtNuevoBarrio");
+            divNuevoBarrio.style.display = "none";
+            txtNuevoBarrio.required = false;
+            txtNuevoBarrio.value = "";
+
             if (!distrId) return;
 
             try {
@@ -235,19 +246,45 @@
                 const data = await response.json();
                 
                 ddlBarrio.disabled = false;
+                
+                // Add default option
+                const defaultOpt = document.createElement("option");
+                defaultOpt.value = "";
+                defaultOpt.textContent = "Seleccione...";
+                ddlBarrio.appendChild(defaultOpt);
+
                 data.forEach(item => {
                     const opt = document.createElement("option");
                     opt.value = item.id;
                     opt.textContent = item.nombre;
                     ddlBarrio.appendChild(opt);
                 });
+
+                // Add "Otro" option
+                const otroOpt = document.createElement("option");
+                otroOpt.value = "OTRO";
+                otroOpt.textContent = "-- Otro (Escribir nuevo) --";
+                ddlBarrio.appendChild(otroOpt);
             } catch (err) {
                 console.error("Error cargando barrios:", err);
             }
         });
 
         ddlBarrio.addEventListener("change", function () {
-            hdnIdBarrio.value = this.value;
+            const divNuevoBarrio = document.getElementById("divNuevoBarrio");
+            const txtNuevoBarrio = document.getElementById("txtNuevoBarrio");
+            
+            if (this.value === "OTRO") {
+                hdnIdBarrio.value = "0"; // Set to 0 to indicate new barrio
+                divNuevoBarrio.style.display = "block";
+                txtNuevoBarrio.required = true;
+                txtNuevoBarrio.focus();
+            } else {
+                hdnIdBarrio.value = this.value;
+                divNuevoBarrio.style.display = "none";
+                txtNuevoBarrio.required = false;
+                txtNuevoBarrio.value = "";
+            }
         });
     });
 </script>
