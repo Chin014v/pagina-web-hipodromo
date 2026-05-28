@@ -65,20 +65,15 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Distrito</label>
-                    <select id="ddlDistrito" asp-for="IdDistrito" class="form-select" required disabled>
+                    <select id="ddlDistrito" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <label class="form-label">Barrio</label>
-                    <select id="ddlBarrio" class="form-select" required disabled>
+                    <select id="ddlBarrio" name="Propietario.IdBarrio" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
                     </select>
-                    <input type="hidden" id="hdnIdBarrio" asp-for="Propietario.IdBarrio" />
-                </div>
-                <div class="col-md-2" id="divNuevoBarrio" style="display: none;">
-                    <label class="form-label">Escribir Barrio</label>
-                    <input type="text" id="txtNuevoBarrio" asp-for="NuevoBarrio" class="form-control" placeholder="Nombre de barrio..." />
                 </div>
             </div>
 
@@ -156,14 +151,12 @@
         const ddlCanton = document.getElementById("ddlCanton");
         const ddlDistrito = document.getElementById("ddlDistrito");
         const ddlBarrio = document.getElementById("ddlBarrio");
-        const hdnIdBarrio = document.getElementById("hdnIdBarrio");
 
         function clearAndDisable(selects) {
             selects.forEach(sel => {
                 sel.innerHTML = '<option value="">Seleccione...</option>';
                 sel.disabled = true;
             });
-            hdnIdBarrio.value = "";
         }
 
         ddlPais.addEventListener("change", async function () {
@@ -232,12 +225,6 @@
         ddlDistrito.addEventListener("change", async function () {
             const distrId = this.value;
             clearAndDisable([ddlBarrio]);
-            
-            const divNuevoBarrio = document.getElementById("divNuevoBarrio");
-            const txtNuevoBarrio = document.getElementById("txtNuevoBarrio");
-            divNuevoBarrio.style.display = "none";
-            txtNuevoBarrio.required = false;
-            txtNuevoBarrio.value = "";
 
             if (!distrId) return;
 
@@ -259,31 +246,8 @@
                     opt.textContent = item.nombre;
                     ddlBarrio.appendChild(opt);
                 });
-
-                // Add "Otro" option
-                const otroOpt = document.createElement("option");
-                otroOpt.value = "OTRO";
-                otroOpt.textContent = "-- Otro (Escribir nuevo) --";
-                ddlBarrio.appendChild(otroOpt);
             } catch (err) {
                 console.error("Error cargando barrios:", err);
-            }
-        });
-
-        ddlBarrio.addEventListener("change", function () {
-            const divNuevoBarrio = document.getElementById("divNuevoBarrio");
-            const txtNuevoBarrio = document.getElementById("txtNuevoBarrio");
-            
-            if (this.value === "OTRO") {
-                hdnIdBarrio.value = "0"; // Set to 0 to indicate new barrio
-                divNuevoBarrio.style.display = "block";
-                txtNuevoBarrio.required = true;
-                txtNuevoBarrio.focus();
-            } else {
-                hdnIdBarrio.value = this.value;
-                divNuevoBarrio.style.display = "none";
-                txtNuevoBarrio.required = false;
-                txtNuevoBarrio.value = "";
             }
         });
     });
