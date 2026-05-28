@@ -19,6 +19,8 @@ namespace HipodromoNacional.Pages.Eventos
 
         public void OnGet()
         {
+            var now = DateTime.Now;
+            Evento.Fecha = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, 0);
         }
 
         public async Task<IActionResult> OnPostAsync()

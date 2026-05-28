@@ -40,38 +40,40 @@
 
             <h5 class="text-secondary border-bottom pb-2 mt-4">Dirección Anidada</h5>
             <div class="row mb-3">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">País</label>
                     <select id="ddlPais" class="form-select" required>
                         <option value="">Seleccione...</option>
-                        <option value="1">Costa Rica</option>
+                        @foreach (var pais in Model.Paises)
+                        {
+                            <option value="@pais.id">@pais.nombre</option>
+                        }
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Provincia</label>
-                    <select id="ddlProvincia" class="form-select" required>
+                    <select id="ddlProvincia" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
-                        <option value="1">San José</option>
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Cantón</label>
-                    <select id="ddlCanton" class="form-select" required>
+                    <select id="ddlCanton" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
-                        <option value="1">Central</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Distrito</label>
-                    <select id="ddlDistrito" class="form-select" required>
+                    <select id="ddlDistrito" class="form-select" required disabled>
                         <option value="">Seleccione...</option>
-                        <option value="1">Mata Redonda</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Barrio</label>
-                    <!-- For simplicity using an input or a select mapped to IdBarrio -->
-                    <input type="number" asp-for="Propietario.IdBarrio" class="form-control" value="1" required />
+                    <select id="ddlBarrio" class="form-select" required disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                    <input type="hidden" id="hdnIdBarrio" asp-for="Propietario.IdBarrio" required />
                 </div>
             </div>
 
@@ -142,5 +144,110 @@
             </div>`;
         document.getElementById('correosContainer').insertAdjacentHTML('beforeend', template);
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const ddlPais = document.getElementById("ddlPais");
+        const ddlProvincia = document.getElementById("ddlProvincia");
+        const ddlCanton = document.getElementById("ddlCanton");
+        const ddlDistrito = document.getElementById("ddlDistrito");
+        const ddlBarrio = document.getElementById("ddlBarrio");
+        const hdnIdBarrio = document.getElementById("hdnIdBarrio");
+
+        function clearAndDisable(selects) {
+            selects.forEach(sel => {
+                sel.innerHTML = '<option value="">Seleccione...</option>';
+                sel.disabled = true;
+            });
+            hdnIdBarrio.value = "";
+        }
+
+        ddlPais.addEventListener("change", async function () {
+            const paisId = this.value;
+            clearAndDisable([ddlProvincia, ddlCanton, ddlDistrito, ddlBarrio]);
+            if (!paisId) return;
+
+            try {
+                const response = await fetch(`?handler=Provincias&paisId=${paisId}`);
+                const data = await response.json();
+                
+                ddlProvincia.disabled = false;
+                data.forEach(item => {
+                    const opt = document.createElement("option");
+                    opt.value = item.id;
+                    opt.textContent = item.nombre;
+                    ddlProvincia.appendChild(opt);
+                });
+            } catch (err) {
+                console.error("Error cargando provincias:", err);
+            }
+        });
+
+        ddlProvincia.addEventListener("change", async function () {
+            const provId = this.value;
+            clearAndDisable([ddlCanton, ddlDistrito, ddlBarrio]);
+            if (!provId) return;
+
+            try {
+                const response = await fetch(`?handler=Cantones&provinciaId=${provId}`);
+                const data = await response.json();
+                
+                ddlCanton.disabled = false;
+                data.forEach(item => {
+                    const opt = document.createElement("option");
+                    opt.value = item.id;
+                    opt.textContent = item.nombre;
+                    ddlCanton.appendChild(opt);
+                });
+            } catch (err) {
+                console.error("Error cargando cantones:", err);
+            }
+        });
+
+        ddlCanton.addEventListener("change", async function () {
+            const cantonId = this.value;
+            clearAndDisable([ddlDistrito, ddlBarrio]);
+            if (!cantonId) return;
+
+            try {
+                const response = await fetch(`?handler=Distritos&cantonId=${cantonId}`);
+                const data = await response.json();
+                
+                ddlDistrito.disabled = false;
+                data.forEach(item => {
+                    const opt = document.createElement("option");
+                    opt.value = item.id;
+                    opt.textContent = item.nombre;
+                    ddlDistrito.appendChild(opt);
+                });
+            } catch (err) {
+                console.error("Error cargando distritos:", err);
+            }
+        });
+
+        ddlDistrito.addEventListener("change", async function () {
+            const distrId = this.value;
+            clearAndDisable([ddlBarrio]);
+            if (!distrId) return;
+
+            try {
+                const response = await fetch(`?handler=Barrios&distritoId=${distrId}`);
+                const data = await response.json();
+                
+                ddlBarrio.disabled = false;
+                data.forEach(item => {
+                    const opt = document.createElement("option");
+                    opt.value = item.id;
+                    opt.textContent = item.nombre;
+                    ddlBarrio.appendChild(opt);
+                });
+            } catch (err) {
+                console.error("Error cargando barrios:", err);
+            }
+        });
+
+        ddlBarrio.addEventListener("change", function () {
+            hdnIdBarrio.value = this.value;
+        });
+    });
 </script>
 }

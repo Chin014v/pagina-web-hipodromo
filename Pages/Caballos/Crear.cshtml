@@ -37,8 +37,14 @@
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">ID Raza</label>
-                    <input asp-for="Caballo.IdRaza" type="number" class="form-control" required />
+                    <label class="form-label">Raza</label>
+                    <select asp-for="Caballo.IdRaza" class="form-select" required>
+                        <option value="">Seleccione Raza...</option>
+                        @foreach (var raza in Model.Razas)
+                        {
+                            <option value="@raza.id">@raza.nombre</option>
+                        }
+                    </select>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Peso (Kg)</label>
@@ -53,8 +59,14 @@
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">ID Propietario</label>
-                    <input asp-for="Caballo.IdPropietario" type="number" class="form-control" required />
+                    <label class="form-label">Propietario</label>
+                    <select asp-for="Caballo.IdPropietario" class="form-select" required>
+                        <option value="">Seleccione Propietario...</option>
+                        @foreach (var prop in Model.Propietarios)
+                        {
+                            <option value="@prop.id">@prop.nombre_completo</option>
+                        }
+                    </select>
                 </div>
             </div>
 
