@@ -54,4 +54,40 @@ namespace HipodromoNacional.Modelos
         public int Capacidad { get; set; }
         public string? Estado { get; set; }
     }
+
+    public class FacturaDetalleDTO
+    {
+        public int IdFactura { get; set; }
+        public string? CodigoFactura { get; set; }
+        public string? ClienteNombre { get; set; }
+        public string? ClienteCedula { get; set; }
+        public string? EventoNombre { get; set; }
+        public string? EventoCodigo { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal PorcentajeDescuento { get; set; }
+        public decimal MontoDescuento { get; set; }
+        public decimal BaseImponible { get; set; }
+        public decimal ImpuestoIva { get; set; }
+        public decimal ComisionAdmin { get; set; }
+        public decimal Total { get; set; }
+        public string? EstadoPago { get; set; }
+        public DateTime FechaEmision { get; set; }
+        public DateTime? FechaVencimiento { get; set; }
+
+        public string? MetodoPago { get; set; }
+        public string? ReferenciaPago { get; set; }
+        public string? ComprobantePago { get; set; }
+        public DateTime? FechaPago { get; set; }
+
+        public List<FacturaLineaDTO> Lineas { get; set; } = new();
+    }
+
+    public class FacturaLineaDTO
+    {
+        public int IdDetalle { get; set; }
+        public string? Descripcion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal PrecioUnitario { get; set; }
+        public decimal SubtotalLinea { get; set; }
+    }
 }

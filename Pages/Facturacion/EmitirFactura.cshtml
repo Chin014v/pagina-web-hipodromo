@@ -111,6 +111,168 @@
     </div>
 </div>
 
+@if (Model.FacturaRecienCreada != null)
+{
+    <!-- Modal Detalle Factura -->
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="invoiceModalLabel">
+                        <i class="bi bi-file-earmark-ruled"></i> Detalle de Factura Emitida
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    
+                    <!-- Contenedor imprimible -->
+                    <div id="printArea" class="bg-white p-4 rounded shadow-sm border border-secondary">
+                        <div class="row align-items-center mb-4">
+                            <div class="col-8">
+                                <h3 class="text-success mb-1 fw-bold">HIPÓDROMO NACIONAL</h3>
+                                <p class="text-muted small mb-0">Sistema de Control y Facturación de Carreras de Caballos</p>
+                                <span class="badge bg-success">FACTURA OFICIAL</span>
+                            </div>
+                            <div class="col-4 text-end">
+                                <h5 class="mb-1 text-danger fw-bold">No. @Model.FacturaRecienCreada.CodigoFactura</h5>
+                                <p class="text-muted small mb-0">Fecha: @Model.FacturaRecienCreada.FechaEmision.ToString("dd/MM/yyyy")</p>
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary" />
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h6 class="fw-bold text-secondary">DATOS DEL CLIENTE</h6>
+                                <p class="mb-1"><strong>Nombre:</strong> @Model.FacturaRecienCreada.ClienteNombre</p>
+                                <p class="mb-0"><strong>Cédula:</strong> @Model.FacturaRecienCreada.ClienteCedula</p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="fw-bold text-secondary">EVENTO / CARRERA</h6>
+                                <p class="mb-1"><strong>Nombre:</strong> @Model.FacturaRecienCreada.EventoNombre</p>
+                                <p class="mb-0"><strong>Código:</strong> @Model.FacturaRecienCreada.EventoCodigo</p>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold text-secondary mb-2">DETALLE DE INSCRIPCIONES</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-middle">
+                                <thead class="table-dark text-white">
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th class="text-center" style="width: 100px;">Cantidad</th>
+                                        <th class="text-end" style="width: 150px;">Precio Unitario</th>
+                                        <th class="text-end" style="width: 150px;">Total Línea</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var linea in Model.FacturaRecienCreada.Lineas)
+                                    {
+                                        <tr>
+                                            <td>@linea.Descripcion</td>
+                                            <td class="text-center">@linea.Cantidad.ToString("F0")</td>
+                                            <td class="text-end">₡@linea.PrecioUnitario.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                            <td class="text-end fw-semibold">₡@linea.SubtotalLinea.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="row justify-content-end mt-4">
+                            <div class="col-6 text-end">
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <td class="text-muted">Subtotal:</td>
+                                        <td style="width: 150px;">₡@Model.FacturaRecienCreada.Subtotal.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                    </tr>
+                                    @if (Model.FacturaRecienCreada.PorcentajeDescuento > 0)
+                                    {
+                                        <tr class="text-danger">
+                                            <td>Descuento Frecuente (@Model.FacturaRecienCreada.PorcentajeDescuento.ToString("F0")%):</td>
+                                            <td>- ₡@Model.FacturaRecienCreada.MontoDescuento.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td class="text-muted">Base Imponible:</td>
+                                        <td>₡@Model.FacturaRecienCreada.BaseImponible.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">IVA (13%):</td>
+                                        <td>₡@Model.FacturaRecienCreada.ImpuestoIva.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                    </tr>
+                                    <tr class="text-warning-emphasis">
+                                        <td class="text-muted">Comisión Admin (5%):</td>
+                                        <td>₡@Model.FacturaRecienCreada.ComisionAdmin.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                    </tr>
+                                    <tr class="border-top border-dark fs-5 fw-bold text-primary">
+                                        <td>Total a Pagar:</td>
+                                        <td>₡@Model.FacturaRecienCreada.Total.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.FacturaRecienCreada.MetodoPago))
+                        {
+                            <hr class="border-secondary mt-3" />
+                            <div class="bg-success-subtle p-3 rounded border border-success text-success-emphasis">
+                                <h6 class="fw-bold text-success mb-2"><i class="bi bi-credit-card-2-back"></i> INFORMACIÓN DEL PAGO</h6>
+                                <div class="row small">
+                                    <div class="col-6">
+                                        <p class="mb-1"><strong>Método:</strong> @Model.FacturaRecienCreada.MetodoPago</p>
+                                        <p class="mb-0"><strong>Fecha:</strong> @(Model.FacturaRecienCreada.FechaPago?.ToString("dd/MM/yyyy hh:mm tt") ?? "-")</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="mb-1"><strong>Referencia:</strong> @Model.FacturaRecienCreada.ReferenciaPago</p>
+                                        <p class="mb-0"><strong>Comprobante:</strong> @Model.FacturaRecienCreada.ComprobantePago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <hr class="border-secondary mt-3" />
+                            <div class="bg-warning-subtle p-3 rounded border border-warning text-warning-emphasis">
+                                <p class="mb-0 small"><i class="bi bi-clock-history"></i> Esta factura se ha emitido en estado <strong>PENDIENTE DE PAGO</strong>. Fecha de vencimiento: @(Model.FacturaRecienCreada.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "-").</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="printInvoice()"><i class="bi bi-printer"></i> Imprimir Factura</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estilos de Impresión -->
+    <style>
+        @@media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #printArea, #printArea * {
+                visibility: visible !important;
+            }
+            #printArea {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .modal-backdrop, .modal-footer, .btn-close {
+                display: none !important;
+            }
+        }
+    </style>
+}
+
 @section Scripts {
 <script>
     const IVA_RATE = 0.13;
@@ -267,6 +429,18 @@
 
         ddlEvento.addEventListener('change', calcularFactura);
         ddlPropietario.addEventListener('change', calcularFactura);
+
+        @if (Model.FacturaRecienCreada != null)
+        {
+            <text>
+            const invoiceModal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+            invoiceModal.show();
+            </text>
+        }
     });
+
+    function printInvoice() {
+        window.print();
+    }
 </script>
 }

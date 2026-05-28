@@ -43,10 +43,17 @@ namespace HipodromoNacional.Pages.Facturacion
         [BindProperty]
         public string NumeroComprobante { get; set; } = string.Empty;
 
+        public FacturaDetalleDTO? FacturaRecienCreada { get; set; }
+
         public async Task OnGetAsync()
         {
             Propietarios = await _propietarioRepo.ObtenerTodosAsync();
             Eventos = await _eventoRepo.ObtenerTodosAsync();
+
+            if (TempData["MostrarFacturaId"] is int idFactura)
+            {
+                FacturaRecienCreada = await _facturacionRepo.ObtenerFacturaDetalleAsync(idFactura);
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -61,6 +68,7 @@ namespace HipodromoNacional.Pages.Facturacion
                     NumeroComprobante ?? ""
                 );
                 TempData["SuccessMessage"] = $"Factura #{newInvoiceId} emitida y registrada correctamente.";
+                TempData["MostrarFacturaId"] = newInvoiceId;
                 return RedirectToPage();
             }
             catch (Exception ex)
