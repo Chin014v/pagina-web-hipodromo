@@ -1,0 +1,41 @@
+@page
+@model HipodromoNacional.Pages.EstablosMgt.IndexModel
+@{
+    ViewData["Title"] = "Gestión de Suministros y Alimentación";
+}
+
+<div class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0 p-5 rounded-4 bg-white">
+                <div class="mb-4">
+                    <span class="display-1 text-info"><i class="bi bi-box-seam"></i></span>
+                </div>
+                <h1 class="fw-bold mb-3">Suministros y Alimentación</h1>
+                <p class="lead text-muted mb-4">
+                    Este módulo está planificado para el control del inventario de suministros (alimentos, medicamentos, herramientas) y el registro del consumo diario de alimentación por caballo asignado a establos.
+                </p>
+                <div class="alert alert-warning border-warning-subtle rounded-3 d-inline-flex align-items-center justify-content-center px-4 py-3 mb-4 mx-auto" style="max-width: 500px;">
+                    <i class="bi bi-gear-fill spin me-3 text-warning fs-3"></i>
+                    <div class="text-start">
+                        <strong class="text-warning-emphasis">Estado: Pendiente de Implementación</strong>
+                        <div class="small text-muted">La interfaz de inventario y consumos por caballo se integrará en la siguiente fase.</div>
+                    </div>
+                </div>
+                <div>
+                    <a asp-page="/Index" class="btn btn-info text-white btn-lg px-4"><i class="bi bi-house-door"></i> Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .spin {
+        display: inline-block;
+        animation: spin 3s linear infinite;
+    }
+    @@keyframes spin {
+        100% { transform: rotate(360deg); }
+    }
+</style>

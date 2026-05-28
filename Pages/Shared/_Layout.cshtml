@@ -39,6 +39,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Facturacion/EmitirFactura"><i class="bi bi-receipt"></i> Facturación</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-plus-circle"></i> Otros Módulos
+                            </a>
+                            <ul class="dropdown-menu shadow border-0 mt-2" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-page="/Inscripciones/Index"><i class="bi bi-pencil-square me-2 text-success"></i> Inscripciones</a></li>
+                                <li><a class="dropdown-item" asp-page="/Resultados/Index"><i class="bi bi-trophy me-2 text-primary"></i> Resultados</a></li>
+                                <li><a class="dropdown-item" asp-page="/Veterinaria/Index"><i class="bi bi-heart-pulse me-2 text-danger"></i> Vet. e Historial</a></li>
+                                <li><a class="dropdown-item" asp-page="/EstablosMgt/Index"><i class="bi bi-box-seam me-2 text-info"></i> Suministros y Alim.</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-page="/Alertas/Index"><i class="bi bi-bell me-2 text-warning"></i> Alertas Sanitarias</a></li>
+                                <li><a class="dropdown-item" asp-page="/Auditoria/Index"><i class="bi bi-shield-lock me-2 text-secondary"></i> Bitácoras Auditoría</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
