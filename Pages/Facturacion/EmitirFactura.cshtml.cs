@@ -47,12 +47,19 @@ namespace HipodromoNacional.Pages.Facturacion
 
         public async Task OnGetAsync()
         {
-            Propietarios = await _propietarioRepo.ObtenerTodosAsync();
-            Eventos = await _eventoRepo.ObtenerTodosAsync();
-
-            if (TempData["MostrarFacturaId"] is int idFactura)
+            try
             {
-                FacturaRecienCreada = await _facturacionRepo.ObtenerFacturaDetalleAsync(idFactura);
+                Propietarios = await _propietarioRepo.ObtenerTodosAsync();
+                Eventos = await _eventoRepo.ObtenerTodosAsync();
+
+                if (TempData["MostrarFacturaId"] is int idFactura)
+                {
+                    FacturaRecienCreada = await _facturacionRepo.ObtenerFacturaDetalleAsync(idFactura);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error al cargar datos de facturación: {ex.Message}";
             }
         }
 
