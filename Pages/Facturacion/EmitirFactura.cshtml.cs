@@ -5,6 +5,8 @@ using HipodromoNacional.Repositorios;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using System.Data;
+using Dapper;
 
 namespace HipodromoNacional.Pages.Facturacion
 {
@@ -13,15 +15,18 @@ namespace HipodromoNacional.Pages.Facturacion
         private readonly IFacturacionRepositorio _facturacionRepo;
         private readonly IPropietarioRepositorio _propietarioRepo;
         private readonly IEventoRepositorio _eventoRepo;
+        private readonly IDbConnection _db;
 
         public EmitirFacturaModel(
             IFacturacionRepositorio facturacionRepo,
             IPropietarioRepositorio propietarioRepo,
-            IEventoRepositorio eventoRepo)
+            IEventoRepositorio eventoRepo,
+            IDbConnection db)
         {
             _facturacionRepo = facturacionRepo;
             _propietarioRepo = propietarioRepo;
             _eventoRepo = eventoRepo;
+            _db = db;
         }
 
         public IEnumerable<PropietarioDTO> Propietarios { get; set; } = new List<PropietarioDTO>();
@@ -67,19 +72,40 @@ namespace HipodromoNacional.Pages.Facturacion
             }
         }
 
-        public async Task<IActionResult> OnPostCalcularFrecuentesAsync()
+        public async Task<IActionResult> OnGetCalcularFrecuentesAsync()
         {
             try
             {
                 await _facturacionRepo.EjecutarCalculoFrecuentesAsync();
-                TempData["SuccessMessage"] = "Descuentos de propietarios frecuentes aplicados correctamente.";
+                var list = await _propietarioRepo.ObtenerTodosAsync();
+                return new JsonResult(new { success = true, propietarios = list });
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Ocurrió un error al ejecutar el batch: {ex.Message}";
+                return new JsonResult(new { success = false, message = ex.Message });
             }
-            
-            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnGetEventosPendientesAsync(int propietarioId)
+        {
+            try
+            {
+                var query = @"
+                    SELECT DISTINCT e.id_evento AS id, e.nombre AS nombre, e.codigo_evento AS codigo, e.precio_inscripcion AS precio
+                    FROM inscripcion i
+                    JOIN caballo c ON i.id_caballo = c.id_caballo
+                    JOIN evento e ON i.id_evento = e.id_evento
+                    WHERE c.id_propietario = @PropietarioId
+                      AND i.id_inscripcion NOT IN (SELECT id_inscripcion FROM detalle_factura)
+                    ORDER BY e.nombre";
+                
+                var list = await _db.QueryAsync<dynamic>(query, new { PropietarioId = propietarioId });
+                return new JsonResult(list);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { error = ex.Message });
+            }
         }
     }
 }

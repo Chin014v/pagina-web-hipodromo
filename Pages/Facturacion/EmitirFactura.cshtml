@@ -23,11 +23,9 @@
 <div class="card shadow-sm mt-4">
     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
         <h4 class="mb-0"><i class="bi bi-receipt"></i> Emisión de Factura</h4>
-        <form method="post" asp-page-handler="CalcularFrecuentes" class="m-0">
-            <button type="submit" class="btn btn-light btn-sm text-success fw-bold">
-                <i class="bi bi-stars"></i> Aplicar Descuentos Frecuentes
-            </button>
-        </form>
+        <button type="button" id="btnCalcularFrecuentes" class="btn btn-light btn-sm text-success fw-bold">
+            <i class="bi bi-stars"></i> Aplicar Descuentos Frecuentes
+        </button>
     </div>
     <div class="card-body">
         <form id="facturaForm" method="post">
@@ -48,14 +46,8 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Evento / Carrera</label>
-                    <select asp-for="IdEvento" class="form-select calc-trigger" required>
-                        <option value="">Seleccione el evento...</option>
-                        @foreach (var e in Model.Eventos)
-                        {
-                            <option value="@e.IdEvento" data-precio="@e.PrecioInscripcion">
-                                @e.Nombre - Código: @e.CodigoEvento (Precio Base: ₡@e.PrecioInscripcion.ToString("N2"))
-                            </option>
-                        }
+                    <select asp-for="IdEvento" class="form-select calc-trigger" required disabled>
+                        <option value="">Seleccione el propietario primero...</option>
                     </select>
                 </div>
             </div>
@@ -155,8 +147,126 @@
         document.getElementById('lblTotal').innerText = formatoColon.format(total);
     }
 
-    document.querySelectorAll('.calc-trigger').forEach(el => {
-        el.addEventListener('change', calcularFactura);
+    document.addEventListener("DOMContentLoaded", function () {
+        const ddlPropietario = document.getElementById('IdPropietario');
+        const ddlEvento = document.getElementById('IdEvento');
+        const btnCalcularFrecuentes = document.getElementById('btnCalcularFrecuentes');
+        const ddlMetodoPago = document.getElementById('IdMetodoPago');
+        const txtReferencia = document.getElementById('Referencia');
+        const txtNumeroComprobante = document.getElementById('NumeroComprobante');
+
+        // 1. Cargar Eventos Pendientes según Propietario
+        ddlPropietario.addEventListener('change', async function () {
+            const propietarioId = this.value;
+            ddlEvento.innerHTML = '<option value="">Cargando eventos...</option>';
+            ddlEvento.disabled = true;
+            
+            // Resetear cálculos
+            document.getElementById('lblSubtotal').innerText = "₡0.00";
+            document.getElementById('lblDescuento').innerText = "- ₡0.00";
+            document.getElementById('lblBase').innerText = "₡0.00";
+            document.getElementById('lblIVA').innerText = "₡0.00";
+            document.getElementById('lblComision').innerText = "₡0.00";
+            document.getElementById('lblTotal').innerText = "₡0.00";
+
+            if (!propietarioId) {
+                ddlEvento.innerHTML = '<option value="">Seleccione el propietario primero...</option>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`?handler=EventosPendientes&propietarioId=${propietarioId}`);
+                const data = await response.json();
+                
+                ddlEvento.innerHTML = '';
+                if (data && data.length > 0) {
+                    const defaultOpt = document.createElement('option');
+                    defaultOpt.value = '';
+                    defaultOpt.textContent = 'Seleccione el evento...';
+                    ddlEvento.appendChild(defaultOpt);
+
+                    data.forEach(item => {
+                        const opt = document.createElement('option');
+                        opt.value = item.id;
+                        opt.setAttribute('data-precio', item.precio);
+                        opt.textContent = `${item.nombre} - Código: ${item.codigo} (Precio Base: ₡${new Intl.NumberFormat('es-CR').format(item.precio)})`;
+                        ddlEvento.appendChild(opt);
+                    });
+                    ddlEvento.disabled = false;
+                } else {
+                    ddlEvento.innerHTML = '<option value="">Este propietario no tiene inscripciones pendientes en ningún evento.</option>';
+                }
+            } catch (err) {
+                console.error("Error al cargar eventos pendientes:", err);
+                ddlEvento.innerHTML = '<option value="">Error al cargar eventos.</option>';
+            }
+        });
+
+        // 2. Aplicar Descuentos Frecuentes vía AJAX
+        btnCalcularFrecuentes.addEventListener('click', async function () {
+            const prevSelectedVal = ddlPropietario.value;
+            
+            btnCalcularFrecuentes.disabled = true;
+            btnCalcularFrecuentes.innerHTML = '<i class="bi bi-hourglass-split"></i> Calculando...';
+
+            try {
+                const response = await fetch('?handler=CalcularFrecuentes');
+                const data = await response.json();
+
+                if (data && data.success) {
+                    // Actualizar el dropdown de propietarios
+                    ddlPropietario.innerHTML = '<option value="">Seleccione el propietario...</option>';
+                    data.propietarios.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.idPropietario;
+                        opt.setAttribute('data-descuento', p.descuentoProximaFactura ? "10" : "0");
+                        
+                        let displayVal = `${p.nombre} ${p.apellido1} (${p.cedula})`;
+                        if (p.descuentoProximaFactura) {
+                            displayVal += " ★ (Descuento 10% Disponible)";
+                        }
+                        opt.textContent = displayVal;
+                        ddlPropietario.appendChild(opt);
+                    });
+
+                    // Restaurar la selección previa
+                    ddlPropietario.value = prevSelectedVal;
+
+                    // Recalcular
+                    calcularFactura();
+
+                    // Mostrar alerta de éxito
+                    alert("Descuentos de propietarios frecuentes recalculados y aplicados correctamente.");
+                } else {
+                    alert("Error al recalcular descuentos: " + (data.message || "Desconocido"));
+                }
+            } catch (err) {
+                console.error("Error al calcular frecuentes:", err);
+                alert("Ocurrió un error de red al intentar calcular frecuentes.");
+            } finally {
+                btnCalcularFrecuentes.disabled = false;
+                btnCalcularFrecuentes.innerHTML = '<i class="bi bi-stars"></i> Aplicar Descuentos Frecuentes';
+            }
+        });
+
+        // 3. Autocompletar Referencia y Comprobante
+        ddlMetodoPago.addEventListener('change', function () {
+            if (this.value) {
+                // Si el usuario no ha ingresado nada, autogeneramos datos válidos y únicos
+                if (!txtReferencia.value) {
+                    txtReferencia.value = 'REF-' + Date.now();
+                }
+                if (!txtNumeroComprobante.value) {
+                    txtNumeroComprobante.value = 'COMP-' + Math.floor(100000 + Math.random() * 900000);
+                }
+            } else {
+                txtReferencia.value = '';
+                txtNumeroComprobante.value = '';
+            }
+        });
+
+        ddlEvento.addEventListener('change', calcularFactura);
+        ddlPropietario.addEventListener('change', calcularFactura);
     });
 </script>
 }
