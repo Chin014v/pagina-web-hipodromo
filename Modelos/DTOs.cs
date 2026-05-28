@@ -71,8 +71,8 @@ namespace HipodromoNacional.Modelos
         public decimal ComisionAdmin { get; set; }
         public decimal Total { get; set; }
         public string? EstadoPago { get; set; }
-        public DateTime FechaEmision { get; set; }
-        public DateTime? FechaVencimiento { get; set; }
+        public DateOnly FechaEmision { get; set; }
+        public DateOnly? FechaVencimiento { get; set; }
 
         public string? MetodoPago { get; set; }
         public string? ReferenciaPago { get; set; }
