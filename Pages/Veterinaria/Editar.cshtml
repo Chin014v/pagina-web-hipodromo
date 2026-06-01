@@ -1,0 +1,52 @@
+﻿@page "{id:int}"
+@model HipodromoNacional.Pages.Veterinaria.EditarModel
+@{
+    ViewData["Title"] = "Editar Registro Veterinario";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Editar Registro Veterinario</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <div class="alert alert-info">
+            Según las reglas del proyecto (Punto 7), modificamos: <strong>Certificado Vigente, Fecha de Vencimiento del Certificado y Observaciones</strong>.
+        </div>
+
+        <form method="post" novalidate>
+            <input type="hidden" asp-for="Historial.IdHistorial" data-val-number="Ingrese un número válido." />
+
+            <div class="mb-3">
+                <label class="form-label">Certificado Vigente</label>
+                <div class="form-check form-switch">
+                    <input asp-for="Historial.CertificadoVigente" class="form-check-input" />
+                    <label class="form-check-label">Marcar como vigente</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fecha de Vencimiento del Certificado</label>
+                <input asp-for="Historial.FechaVencimientoCertificado" type="date" class="form-control" required />
+                <span asp-validation-for="Historial.FechaVencimientoCertificado" class="field-validation-error"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Observaciones</label>
+                <textarea asp-for="Historial.Observaciones" class="form-control" rows="3"></textarea>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Actualizar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

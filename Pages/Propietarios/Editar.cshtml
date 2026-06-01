@@ -1,4 +1,4 @@
-@page "{id:int}"
+﻿@page "{id:int}"
 @model HipodromoNacional.Pages.Propietarios.EditarModel
 @{
     ViewData["Title"] = "Editar Propietario";
@@ -16,8 +16,8 @@
             </div>
         }
 
-        <form method="post">
-            <input type="hidden" asp-for="Propietario.IdPropietario" />
+        <form method="post" novalidate>
+            <input type="hidden" asp-for="Propietario.IdPropietario" data-val-number="Ingrese un número válido." />
 
             <div class="alert alert-info">
                 Según las reglas del proyecto (Punto 7), se permite modificar al menos 3 campos. 
@@ -27,11 +27,13 @@
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
                 <input asp-for="Propietario.Nombre" class="form-control" required />
+                <span asp-validation-for="Propietario.Nombre" class="field-validation-error"></span>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Primer Apellido</label>
                 <input asp-for="Propietario.Apellido1" class="form-control" required />
+                <span asp-validation-for="Propietario.Apellido1" class="field-validation-error"></span>
             </div>
 
             <div class="mb-3">
@@ -40,6 +42,7 @@
                     <option value="Activo">Activo</option>
                     <option value="Inactivo">Inactivo</option>
                 </select>
+                <span asp-validation-for="Propietario.Estado" class="field-validation-error"></span>
             </div>
 
             <hr />
@@ -48,3 +51,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

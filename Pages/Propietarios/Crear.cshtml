@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model HipodromoNacional.Pages.Propietarios.CrearModel
 @{
     ViewData["Title"] = "Crear Propietario";
@@ -17,21 +17,24 @@
         <h4 class="mb-0">Registrar Nuevo Propietario</h4>
     </div>
     <div class="card-body">
-        <form method="post">
+        <form method="post" novalidate>
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
             <h5 class="text-secondary border-bottom pb-2">Datos Personales</h5>
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label class="form-label">Cédula</label>
                     <input asp-for="Propietario.Cedula" class="form-control" required />
+                    <span asp-validation-for="Propietario.Cedula" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Nombre</label>
                     <input asp-for="Propietario.Nombre" class="form-control" required />
+                    <span asp-validation-for="Propietario.Nombre" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Primer Apellido</label>
                     <input asp-for="Propietario.Apellido1" class="form-control" required />
+                    <span asp-validation-for="Propietario.Apellido1" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Segundo Apellido</label>
@@ -112,6 +115,7 @@
                 </div>
             </div>
 
+            <input type="hidden" asp-for="Propietario.Estado" value="Activo" />
             <hr />
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Propietario</button>
             <a href="/" class="btn btn-secondary">Cancelar</a>
@@ -120,6 +124,7 @@
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 <script>
     function addTelefono() {
         const template = `

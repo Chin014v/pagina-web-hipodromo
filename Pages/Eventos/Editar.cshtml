@@ -1,4 +1,4 @@
-@page "{id:int}"
+﻿@page "{id:int}"
 @model HipodromoNacional.Pages.Eventos.EditarModel
 @{
     ViewData["Title"] = "Editar Evento";
@@ -21,17 +21,19 @@
             Según las reglas del proyecto (Punto 7), modificaremos al menos 3 campos: <strong>Fecha, Premio Total y Estado</strong>.
         </div>
 
-        <form method="post">
-            <input type="hidden" asp-for="Evento.IdEvento" />
+        <form method="post" novalidate>
+            <input type="hidden" asp-for="Evento.IdEvento" data-val-number="Ingrese un número válido." />
 
             <div class="mb-3">
                 <label class="form-label">Fecha y Hora</label>
-                <input asp-for="Evento.Fecha" type="datetime-local" class="form-control" step="any" required />
+                <input asp-for="Evento.Fecha" type="datetime-local" class="form-control" step="any" required data-val-date="Ingrese una fecha válida." />
+                <span asp-validation-for="Evento.Fecha" class="field-validation-error"></span>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Premio Total ($)</label>
-                <input asp-for="Evento.PremioTotal" type="number" step="0.01" class="form-control" required />
+                <input asp-for="Evento.PremioTotal" type="number" step="0.01" min="0.01" class="form-control" required data-val-number="Ingrese un número válido." />
+                <span asp-validation-for="Evento.PremioTotal" class="field-validation-error"></span>
             </div>
 
             <div class="mb-3">
@@ -42,6 +44,7 @@
                     <option value="Finalizado">Finalizado</option>
                     <option value="Cancelado">Cancelado</option>
                 </select>
+                <span asp-validation-for="Evento.Estado" class="field-validation-error"></span>
             </div>
 
             <hr />
@@ -50,3 +53,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

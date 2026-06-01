@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model HipodromoNacional.Pages.Establos.CrearModel
 @{
     ViewData["Title"] = "Registrar Establo";
@@ -15,19 +15,22 @@
             <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
         }
 
-        <form method="post">
+        <form method="post" novalidate>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Código</label>
                     <input asp-for="Establo.Codigo" class="form-control" required />
+                    <span asp-validation-for="Establo.Codigo" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ubicación</label>
                     <input asp-for="Establo.Ubicacion" class="form-control" required />
+                    <span asp-validation-for="Establo.Ubicacion" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Capacidad (Número de caballos)</label>
-                    <input asp-for="Establo.Capacidad" type="number" class="form-control" required />
+                    <input asp-for="Establo.Capacidad" type="number" min="1" class="form-control" required data-val-number="Ingrese un número válido." />
+                    <span asp-validation-for="Establo.Capacidad" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Estado</label>
@@ -36,6 +39,7 @@
                         <option value="Lleno">Lleno</option>
                         <option value="Mantenimiento">Mantenimiento</option>
                     </select>
+                    <span asp-validation-for="Establo.Estado" class="field-validation-error"></span>
                 </div>
             </div>
 
@@ -45,3 +49,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

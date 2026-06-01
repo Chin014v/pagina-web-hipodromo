@@ -1,0 +1,84 @@
+﻿@page
+@model HipodromoNacional.Pages.EstablosMgt.Suministros.CrearModel
+@{
+    ViewData["Title"] = "Nuevo Suministro";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-box"></i> Nuevo Suministro</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Código</label>
+                    <input asp-for="Suministro.Codigo" class="form-control" required />
+                    <span asp-validation-for="Suministro.Codigo" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input asp-for="Suministro.NombreSuministro" class="form-control" required />
+                    <span asp-validation-for="Suministro.NombreSuministro" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tipo</label>
+                    <select asp-for="Suministro.Tipo" class="form-select" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Alimento">Alimento</option>
+                        <option value="Medicamento">Medicamento</option>
+                        <option value="Herramienta">Herramienta</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <span asp-validation-for="Suministro.Tipo" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Proveedor</label>
+                    <select asp-for="Suministro.IdProveedor" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var p in Model.Proveedores)
+                        {
+                            <option value="@p.IdProveedor">@p.Nombre</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Suministro.IdProveedor" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Cantidad Disponible</label>
+                    <input asp-for="Suministro.CantidadDisponible" type="number" step="0.01" min="0" class="form-control" required data-val-number="Ingrese un número válido." />
+                    <span asp-validation-for="Suministro.CantidadDisponible" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Unidad Medida</label>
+                    <input asp-for="Suministro.UnidadMedida" class="form-control" required />
+                    <span asp-validation-for="Suministro.UnidadMedida" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Fecha Ingreso</label>
+                    <input asp-for="Suministro.FechaIngreso" type="date" class="form-control" required />
+                    <span asp-validation-for="Suministro.FechaIngreso" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Suministro.Estado" class="form-select" required>
+                        <option value="Disponible">Disponible</option>
+                        <option value="Agotado">Agotado</option>
+                    </select>
+                    <span asp-validation-for="Suministro.Estado" class="field-validation-error"></span>
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

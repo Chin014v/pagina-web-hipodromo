@@ -1,0 +1,66 @@
+﻿@page "{id:int}"
+@model HipodromoNacional.Pages.EstablosMgt.Asignacion.EditarModel
+@{
+    ViewData["Title"] = "Editar Asignación de Establo";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Editar Asignación de Establo</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <div class="alert alert-info">
+            Según las reglas del proyecto (Punto 7), modificamos: <strong>Estado, Fecha de Salida y Establo Asignado</strong>.
+        </div>
+
+        <form method="post" novalidate>
+            <input type="hidden" asp-for="Asignacion.IdAsignacion" data-val-number="Ingrese un número válido." />
+
+            <div class="mb-3">
+                <label class="form-label">Estado</label>
+                <select asp-for="Asignacion.Estado" class="form-select" required>
+                    <option value="Activa">Activa</option>
+                    <option value="Finalizada">Finalizada</option>
+                </select>
+                <span asp-validation-for="Asignacion.Estado" class="field-validation-error"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fecha de Salida</label>
+                <input asp-for="Asignacion.FechaSalida" type="date" class="form-control" />
+                <small class="text-muted">Dejar vacío si el caballo aún ocupa el establo</small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Establo</label>
+                <select asp-for="Asignacion.IdEstablo" class="form-select" required data-val-number="Ingrese un número válido.">
+                    @foreach (var e in Model.Establos)
+                    {
+                        @if (e.IdEstablo == Model.Asignacion.IdEstablo)
+                        {
+                            <option value="@e.IdEstablo" selected>@e.Codigo - @e.Ubicacion</option>
+                        }
+                        else
+                        {
+                            <option value="@e.IdEstablo">@e.Codigo - @e.Ubicacion</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="Asignacion.IdEstablo" class="field-validation-error"></span>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Actualizar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,41 +1,63 @@
 @page
 @model HipodromoNacional.Pages.Alertas.IndexModel
 @{
-    ViewData["Title"] = "Notificaciones de Certificación";
+    ViewData["Title"] = "Alertas de Certificación";
 }
 
-<div class="container py-5 text-center">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow border-0 p-5 rounded-4 bg-white">
-                <div class="mb-4">
-                    <span class="display-1 text-warning"><i class="bi bi-bell"></i></span>
-                </div>
-                <h1 class="fw-bold mb-3">Panel de Alertas Sanitarias</h1>
-                <p class="lead text-muted mb-4">
-                    Este módulo está planificado para desplegar las alertas automáticas generadas por los triggers de la base de datos cuando el certificado veterinario de un caballo está vencido o próximo a vencer, notificando de inmediato a su propietario.
-                </p>
-                <div class="alert alert-warning border-warning-subtle rounded-3 d-inline-flex align-items-center justify-content-center px-4 py-3 mb-4 mx-auto" style="max-width: 500px;">
-                    <i class="bi bi-gear-fill spin me-3 text-warning fs-3"></i>
-                    <div class="text-start">
-                        <strong class="text-warning-emphasis">Estado: Pendiente de Implementación</strong>
-                        <div class="small text-muted">El receptor visual de notificaciones y disparadores sanitarios se integrará en la siguiente fase.</div>
-                    </div>
-                </div>
-                <div>
-                    <a asp-page="/Index" class="btn btn-warning text-dark btn-lg px-4"><i class="bi bi-house-door"></i> Volver al Inicio</a>
-                </div>
-            </div>
-        </div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-bell"></i> Alertas de Certificación</h2>
+    <a asp-page="./Crear" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nueva Alerta</a>
 </div>
 
-<style>
-    .spin {
-        display: inline-block;
-        animation: spin 3s linear infinite;
-    }
-    @@keyframes spin {
-        100% { transform: rotate(360deg); }
-    }
-</style>
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Caballo</th>
+                <th>Mensaje</th>
+                <th>Fecha Alerta</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Alertas)
+            {
+                <tr>
+                    <td>@item.NombreCaballo</td>
+                    <td>@item.Mensaje</td>
+                    <td>@item.FechaAlerta.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @switch (item.Estado)
+                        {
+                            case "Pendiente":
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                                break;
+                            case "Revisada":
+                                <span class="badge bg-info text-dark">Revisada</span>
+                                break;
+                            case "Resuelta":
+                                <span class="badge bg-success">Resuelta</span>
+                                break;
+                            default:
+                                <span class="badge bg-secondary">@item.Estado</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        <a asp-page="./Editar" asp-route-id="@item.IdAlerta" class="btn btn-sm btn-outline-warning" title="Cambiar Estado"><i class="bi bi-pencil"></i></a>
+                        <a asp-page="./Eliminar" asp-route-id="@item.IdAlerta" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

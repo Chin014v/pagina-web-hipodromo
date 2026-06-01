@@ -1,0 +1,59 @@
+﻿@page
+@model HipodromoNacional.Pages.Resultados.CrearModel
+@{
+    ViewData["Title"] = "Nuevo Resultado";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-trophy"></i> Registrar Nuevo Resultado</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Inscripción</label>
+                    <select asp-for="Resultado.IdInscripcion" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var i in Model.Inscripciones)
+                        {
+                            <option value="@i.IdInscripcion">@i.NombreCaballo - @i.NombreEvento</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Resultado.IdInscripcion" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Posición</label>
+                    <input asp-for="Resultado.Posicion" type="number" min="1" class="form-control" required data-val-number="Ingrese un número válido." />
+                    <span asp-validation-for="Resultado.Posicion" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Tiempo (HH:mm:ss.ff)</label>
+                    <input asp-for="Resultado.TiempoRegistro" type="time" step="0.01" class="form-control" required data-val-time="Ingrese una hora válida." />
+                    <span asp-validation-for="Resultado.TiempoRegistro" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Premio Obtenido</label>
+                    <input asp-for="Resultado.PremioObtenido" type="number" step="0.01" min="0" class="form-control" required data-val-number="Ingrese un número válido." />
+                    <span asp-validation-for="Resultado.PremioObtenido" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Observaciones</label>
+                    <textarea asp-for="Resultado.Observaciones" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Resultado</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

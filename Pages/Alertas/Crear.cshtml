@@ -1,0 +1,45 @@
+﻿@page
+@model HipodromoNacional.Pages.Alertas.CrearModel
+@{
+    ViewData["Title"] = "Nueva Alerta Sanitaria";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-bell"></i> Registrar Nueva Alerta Sanitaria</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Caballo</label>
+                    <select asp-for="IdCaballo" class="form-select" required>
+                        <option value="">Seleccione...</option>
+                        @foreach (var c in Model.Caballos)
+                        {
+                            <option value="@c.IdCaballo">@c.Nombre (@c.CodigoUnico)</option>
+                        }
+                    </select>
+                    <span asp-validation-for="IdCaballo" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Mensaje</label>
+                    <textarea asp-for="Mensaje" class="form-control" rows="4" required></textarea>
+                    <span asp-validation-for="Mensaje" class="field-validation-error"></span>
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Alerta</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

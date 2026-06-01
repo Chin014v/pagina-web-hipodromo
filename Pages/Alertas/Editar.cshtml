@@ -1,0 +1,58 @@
+﻿@page "{id:int}"
+@model HipodromoNacional.Pages.Alertas.EditarModel
+@{
+    ViewData["Title"] = "Cambiar Estado de Alerta";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Cambiar Estado de Alerta</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <div class="alert alert-info">
+            Según las reglas del proyecto (Punto 7), modificamos: <strong>Estado, Mensaje de la alerta y Fecha de alerta</strong>.
+        </div>
+
+        <form method="post" novalidate>
+            <input type="hidden" asp-for="Alerta.IdAlerta" data-val-number="Ingrese un número válido." />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Caballo</label>
+                    <input class="form-control" value="@Model.Alerta.NombreCaballo" readonly />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Alerta.Estado" class="form-select" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Atendida">Atendida</option>
+                    </select>
+                    <span asp-validation-for="Alerta.Estado" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Mensaje</label>
+                    <textarea asp-for="Alerta.Mensaje" class="form-control" rows="3" required></textarea>
+                    <span asp-validation-for="Alerta.Mensaje" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Alerta</label>
+                    <input asp-for="Alerta.FechaAlerta" type="datetime-local" class="form-control" required data-val-date="Ingrese una fecha válida." />
+                    <span asp-validation-for="Alerta.FechaAlerta" class="field-validation-error"></span>
+                </div>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Actualizar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,4 +1,4 @@
-@page "{id:int}"
+﻿@page "{id:int}"
 @model HipodromoNacional.Pages.Caballos.EditarModel
 @{
     ViewData["Title"] = "Editar Caballo";
@@ -21,26 +21,30 @@
             Según las reglas del proyecto (Punto 7), modificaremos al menos 3 campos: <strong>Nombre, Peso y Estado de Salud</strong>.
         </div>
 
-        <form method="post">
-            <input type="hidden" asp-for="Caballo.IdCaballo" />
+        <form method="post" novalidate>
+            <input type="hidden" asp-for="Caballo.IdCaballo" data-val-number="Ingrese un número válido." />
 
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
                 <input asp-for="Caballo.Nombre" class="form-control" required />
+                <span asp-validation-for="Caballo.Nombre" class="field-validation-error"></span>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Peso (Kg)</label>
-                <input asp-for="Caballo.PesoKg" type="number" step="0.01" class="form-control" required />
+                <input asp-for="Caballo.PesoKg" type="number" step="0.01" min="0.1" class="form-control" required data-val-number="Ingrese un número válido." />
+                <span asp-validation-for="Caballo.PesoKg" class="field-validation-error"></span>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Estado de Salud</label>
                 <select asp-for="Caballo.EstadoSalud" class="form-select" required>
+                    <option value="">Seleccione...</option>
                     <option value="Saludable">Saludable</option>
-                    <option value="EnTratamiento">EnTratamiento</option>
-                    <option value="NoApto">NoApto</option>
+                    <option value="EnTratamiento">En Tratamiento</option>
+                    <option value="NoApto">No Apto</option>
                 </select>
+                <span asp-validation-for="Caballo.EstadoSalud" class="field-validation-error"></span>
             </div>
 
             <hr />
@@ -49,3 +53,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

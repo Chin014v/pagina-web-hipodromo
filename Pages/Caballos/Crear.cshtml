@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model HipodromoNacional.Pages.Caballos.CrearModel
 @{
     ViewData["Title"] = "Registrar Caballo";
@@ -15,58 +15,68 @@
             <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
         }
 
-        <form method="post">
+        <form method="post" novalidate>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Código Único</label>
+                    <label class="form-label">Código Asignado</label>
                     <input asp-for="Caballo.CodigoUnico" class="form-control" required />
+                    <span asp-validation-for="Caballo.CodigoUnico" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Nombre</label>
                     <input asp-for="Caballo.Nombre" class="form-control" required />
+                    <span asp-validation-for="Caballo.Nombre" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Fecha de Nacimiento</label>
                     <input asp-for="Caballo.FechaNacimiento" type="date" class="form-control" required />
+                    <span asp-validation-for="Caballo.FechaNacimiento" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Sexo</label>
                     <select asp-for="Caballo.Sexo" class="form-select" required>
+                        <option value="">Seleccione...</option>
                         <option value="Macho">Macho</option>
                         <option value="Hembra">Hembra</option>
                     </select>
+                    <span asp-validation-for="Caballo.Sexo" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Raza</label>
-                    <select asp-for="Caballo.IdRaza" class="form-select" required>
+                    <select asp-for="Caballo.IdRaza" class="form-select" required data-val-number="Ingrese un número válido.">
                         <option value="">Seleccione Raza...</option>
                         @foreach (var raza in Model.Razas)
                         {
                             <option value="@raza.id">@raza.nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="Caballo.IdRaza" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Peso (Kg)</label>
-                    <input asp-for="Caballo.PesoKg" type="number" step="0.01" class="form-control" required />
+                    <input asp-for="Caballo.PesoKg" type="number" step="0.01" min="0.1" class="form-control" required data-val-number="Ingrese un número válido." />
+                    <span asp-validation-for="Caballo.PesoKg" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Estado de Salud</label>
                     <select asp-for="Caballo.EstadoSalud" class="form-select" required>
+                        <option value="">Seleccione...</option>
                         <option value="Saludable">Saludable</option>
-                        <option value="EnTratamiento">EnTratamiento</option>
-                        <option value="NoApto">NoApto</option>
+                        <option value="EnTratamiento">En Tratamiento</option>
+                        <option value="NoApto">No Apto</option>
                     </select>
+                    <span asp-validation-for="Caballo.EstadoSalud" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Propietario</label>
-                    <select asp-for="Caballo.IdPropietario" class="form-select" required>
+                    <select asp-for="Caballo.IdPropietario" class="form-select" required data-val-number="Ingrese un número válido.">
                         <option value="">Seleccione Propietario...</option>
                         @foreach (var prop in Model.Propietarios)
                         {
                             <option value="@prop.id">@prop.nombre_completo</option>
                         }
                     </select>
+                    <span asp-validation-for="Caballo.IdPropietario" class="field-validation-error"></span>
                 </div>
             </div>
 
@@ -76,3 +86,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

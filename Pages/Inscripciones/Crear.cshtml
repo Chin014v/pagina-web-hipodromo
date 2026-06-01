@@ -1,0 +1,75 @@
+﻿@page
+@model HipodromoNacional.Pages.Inscripciones.CrearModel
+@{
+    ViewData["Title"] = "Nueva Inscripción";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-success text-white">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Nueva Inscripción a Carrera</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Código Inscripción</label>
+                    <input asp-for="Inscripcion.CodigoInscripcion" class="form-control" required />
+                    <span asp-validation-for="Inscripcion.CodigoInscripcion" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Evento</label>
+                    <select asp-for="Inscripcion.IdEvento" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var e in Model.Eventos)
+                        {
+                            <option value="@e.IdEvento">@e.Nombre (@e.CodigoEvento)</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Inscripcion.IdEvento" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Caballo</label>
+                    <select asp-for="Inscripcion.IdCaballo" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var c in Model.Caballos)
+                        {
+                            <option value="@c.IdCaballo">@c.Nombre (@c.CodigoUnico)</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Inscripcion.IdCaballo" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Inscripción</label>
+                    <input asp-for="Inscripcion.FechaInscripcion" type="date" class="form-control" required />
+                    <span asp-validation-for="Inscripcion.FechaInscripcion" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Inscripcion.Estado" class="form-select" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Aprobada">Aprobada</option>
+                        <option value="Rechazada">Rechazada</option>
+                        <option value="Cancelada">Cancelada</option>
+                    </select>
+                    <span asp-validation-for="Inscripcion.Estado" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Observaciones</label>
+                    <textarea asp-for="Inscripcion.Observaciones" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Guardar Inscripción</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

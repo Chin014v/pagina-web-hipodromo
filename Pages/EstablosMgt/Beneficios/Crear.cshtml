@@ -1,0 +1,64 @@
+﻿@page
+@model HipodromoNacional.Pages.EstablosMgt.Beneficios.CrearModel
+@{
+    ViewData["Title"] = "Nuevo Beneficio";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-gift"></i> Nuevo Beneficio para Propietario</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Propietario</label>
+                    <select asp-for="Beneficio.IdPropietario" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var p in Model.Propietarios)
+                        {
+                            <option value="@p.IdPropietario">@p.Nombre @p.Apellido1</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Beneficio.IdPropietario" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tipo Beneficio</label>
+                    <select asp-for="Beneficio.TipoBeneficio" class="form-select" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Descuento Inscripción">Descuento Inscripción</option>
+                        <option value="Descuento Establo">Descuento Establo</option>
+                        <option value="Comisión Reducida">Comisión Reducida</option>
+                    </select>
+                    <span asp-validation-for="Beneficio.TipoBeneficio" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">% Descuento</label>
+                    <input asp-for="Beneficio.PorcentajeDescuento" type="number" step="0.01" min="0" max="100" class="form-control" required data-val-number="Ingrese un número válido." />
+                    <span asp-validation-for="Beneficio.PorcentajeDescuento" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Beneficio.Estado" class="form-select" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Aplicado">Aplicado</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                    <span asp-validation-for="Beneficio.Estado" class="field-validation-error"></span>
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

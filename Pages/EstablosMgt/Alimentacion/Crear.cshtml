@@ -1,0 +1,70 @@
+﻿@page
+@model HipodromoNacional.Pages.EstablosMgt.Alimentacion.CrearModel
+@{
+    ViewData["Title"] = "Nuevo Registro de Alimentación";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-basket"></i> Nuevo Registro de Alimentación</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Caballo</label>
+                    <select asp-for="Alimentacion.IdCaballo" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var c in Model.Caballos)
+                        {
+                            <option value="@c.IdCaballo">@c.Nombre</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Alimentacion.IdCaballo" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Suministro</label>
+                    <select asp-for="Alimentacion.IdSuministro" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var s in Model.Suministros)
+                        {
+                            <option value="@s.IdSuministro">@s.NombreSuministro</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Alimentacion.IdSuministro" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Fecha</label>
+                    <input asp-for="Alimentacion.Fecha" type="date" class="form-control" required data-val-date="Ingrese una fecha válida." />
+                    <span asp-validation-for="Alimentacion.Fecha" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Cantidad</label>
+                    <input asp-for="Alimentacion.Cantidad" type="number" step="0.01" min="0" class="form-control" required data-val-number="Ingrese un número válido." />
+                    <span asp-validation-for="Alimentacion.Cantidad" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Unidad</label>
+                    <input asp-for="Alimentacion.Unidad" class="form-control" required />
+                    <span asp-validation-for="Alimentacion.Unidad" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Observaciones</label>
+                    <textarea asp-for="Alimentacion.Observaciones" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

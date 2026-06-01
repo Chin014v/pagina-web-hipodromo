@@ -1,0 +1,86 @@
+﻿@page
+@model HipodromoNacional.Pages.Veterinaria.CrearModel
+@{
+    ViewData["Title"] = "Nuevo Registro Veterinario";
+}
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-heart-pulse"></i> Nuevo Registro Veterinario</h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Caballo</label>
+                    <select asp-for="Historial.IdCaballo" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var c in Model.Caballos)
+                        {
+                            <option value="@c.IdCaballo">@c.Nombre</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Historial.IdCaballo" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Veterinario</label>
+                    <select asp-for="Historial.IdVeterinario" class="form-select" required data-val-number="Ingrese un número válido.">
+                        <option value="">Seleccione...</option>
+                        @foreach (var v in Model.Veterinarios)
+                        {
+                            <option value="@v.IdVeterinario">@v.Nombre @v.Apellido1</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Historial.IdVeterinario" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Código Registro</label>
+                    <input asp-for="Historial.CodigoRegistro" class="form-control" required />
+                    <span asp-validation-for="Historial.CodigoRegistro" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Revisión</label>
+                    <input asp-for="Historial.FechaRevision" type="date" class="form-control" required />
+                    <span asp-validation-for="Historial.FechaRevision" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Diagnóstico</label>
+                    <input asp-for="Historial.Diagnostico" class="form-control" required />
+                    <span asp-validation-for="Historial.Diagnostico" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tratamiento</label>
+                    <input asp-for="Historial.Tratamiento" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Vencimiento Certificado</label>
+                    <input asp-for="Historial.FechaVencimientoCertificado" type="date" class="form-control" required />
+                    <span asp-validation-for="Historial.FechaVencimientoCertificado" class="field-validation-error"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Certificado Vigente</label>
+                    <div class="form-check form-switch mt-2">
+                        <input asp-for="Historial.CertificadoVigente" class="form-check-input" />
+                        <label class="form-check-label">Vigente</label>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Observaciones</label>
+                    <textarea asp-for="Historial.Observaciones" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
