@@ -1,0 +1,69 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using HipodromoNacional.Modelos;
+using HipodromoNacional.Repositorios;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Dapper;
+
+namespace HipodromoNacional.Pages.Usuarios
+{
+    [Authorize(Roles = "Administrador")]
+    public class CrearModel : PageModel
+    {
+        private readonly IUsuarioRepositorio _repo;
+        private readonly IDbConnection _db;
+
+        public CrearModel(IUsuarioRepositorio repo, IDbConnection db)
+        {
+            _repo = repo;
+            _db = db;
+        }
+
+        [BindProperty]
+        public UsuarioDTO Usuario { get; set; } = new();
+
+        public IEnumerable<RolDTO> Roles { get; set; } = new List<RolDTO>();
+        public IEnumerable<dynamic> Propietarios { get; set; } = new List<dynamic>();
+        public IEnumerable<dynamic> Veterinarios { get; set; } = new List<dynamic>();
+
+        public async Task OnGetAsync()
+        {
+            await CargarListasAsync();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (string.IsNullOrEmpty(Usuario.Contrasena))
+            {
+                ModelState.AddModelError("Usuario.Contrasena", "La contraseña es obligatoria para crear un usuario.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await CargarListasAsync();
+                return Page();
+            }
+
+            try
+            {
+                await _repo.CrearUsuarioAsync(Usuario);
+                TempData["SuccessMessage"] = "Usuario creado exitosamente.";
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Error al registrar usuario: {ex.Message}");
+                await CargarListasAsync();
+                return Page();
+            }
+        }
+
+        private async Task CargarListasAsync()
+        {
+            Roles = await _repo.ObtenerRolesAsync();
+            Propietarios = await _db.QueryAsync("SELECT id_propietario AS Id, nombre || ' ' || apellido1 AS Nombre FROM propietario WHERE estado = 'Activo' ORDER BY nombre");
+            Veterinarios = await _db.QueryAsync("SELECT id_veterinario AS Id, nombre || ' ' || apellido1 AS Nombre FROM veterinario WHERE estado = 'Activo' ORDER BY nombre");
+        }
+    }
+}

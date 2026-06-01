@@ -10,9 +10,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
 
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
-builder.Services.AddScoped<IDbConnection>(sp => new NpgsqlConnection(connectionString));
+builder.Services.AddScoped<IDbConnection>(sp =>
+{
+    var username = "admin"; // Usuario por defecto para bitácoras al desactivar login
+    var connBuilder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString)
+    {
+        ApplicationName = username
+    };
+    return new NpgsqlConnection(connBuilder.ConnectionString);
+});
+
+// Autenticación por Cookies
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login";
+        options.LogoutPath = "/Logout";
+        options.AccessDeniedPath = "/Error";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    });
 
 builder.Services.AddScoped<IPropietarioRepositorio, PropietarioRepositorio>();
 builder.Services.AddScoped<ICaballoRepositorio, CaballoRepositorio>();
@@ -29,10 +48,18 @@ builder.Services.AddScoped<IAsignacionEstabloRepositorio, AsignacionEstabloRepos
 builder.Services.AddScoped<IProveedorRepositorio, ProveedorRepositorio>();
 builder.Services.AddScoped<IBeneficioRepositorio, BeneficioRepositorio>();
 builder.Services.AddScoped<IAuditoriaRepositorio, AuditoriaRepositorio>();
+builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<IRazaRepositorio, RazaRepositorio>();
 
 var app = builder.Build();
 
-
+// Run DB Initializer
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<IDbConnection>();
+    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+    DbInitializer.Initialize(db, env.ContentRootPath);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -46,6 +73,7 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

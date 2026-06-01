@@ -1,0 +1,157 @@
+@page
+@model HipodromoNacional.Pages.Estadisticas.IndexModel
+@{
+    ViewData["Title"] = "Estadísticas e Informes";
+}
+
+<div class="container-fluid px-4">
+    <div class="my-4">
+        <h1><i class="bi bi-bar-chart text-success"></i> Estadísticas y Reportes</h1>
+        <p class="text-muted">Resumen ejecutivo y rankings de rendimiento del Hipódromo Nacional.</p>
+    </div>
+
+    <!-- Tarjetas de Métricas Rápidas -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase small">Total Caballos</h6>
+                            <h2 class="mb-0">@Model.TotalCaballos</h2>
+                        </div>
+                        <i class="bi bi-heptagon fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase small">Total Ingresos</h6>
+                            <h2 class="mb-0">@Model.TotalIngresos.ToString("C")</h2>
+                        </div>
+                        <i class="bi bi-cash-coin fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase small">Propietarios Activos</h6>
+                            <h2 class="mb-0">@Model.TotalPropietarios</h2>
+                        </div>
+                        <i class="bi bi-people fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-warning text-dark h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-dark-50 text-uppercase small">Eventos Programados</h6>
+                            <h2 class="mb-0">@Model.TotalEventos</h2>
+                        </div>
+                        <i class="bi bi-calendar-event fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Caballos Ganadores -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-trophy text-warning"></i> Caballos con más Victorias</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        @if (!Model.CaballosGanadores.Any())
+                        {
+                            <li class="list-group-item text-center text-muted">No se registran victorias.</li>
+                        }
+                        else
+                        {
+                            foreach (var c in Model.CaballosGanadores)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-start px-0">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">@c.Caballo</div>
+                                        <span class="text-muted small">Prop: @c.Propietario</span>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">@c.Victorias victorias</span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Propietarios Inversión -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-wallet2 text-success"></i> Facturación por Propietario</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        @if (!Model.PropietariosInversion.Any())
+                        {
+                            <li class="list-group-item text-center text-muted">No hay facturación registrada.</li>
+                        }
+                        else
+                        {
+                            foreach (var p in Model.PropietariosInversion)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <div>
+                                        <div class="fw-bold">@p.Propietario</div>
+                                        <span class="text-muted small">Cédula: @p.Cedula</span>
+                                    </div>
+                                    <span class="fw-bold text-success">@p.TotalFacturado.ToString("C")</span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Razas Frecuentes -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-tags text-info"></i> Distribución de Razas</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        @if (!Model.RazasFrecuentes.Any())
+                        {
+                            <li class="list-group-item text-center text-muted">No hay caballos registrados.</li>
+                        }
+                        else
+                        {
+                            foreach (var r in Model.RazasFrecuentes)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span class="fw-bold">@r.Raza</span>
+                                    <span class="badge bg-secondary">@r.Cantidad caballos</span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

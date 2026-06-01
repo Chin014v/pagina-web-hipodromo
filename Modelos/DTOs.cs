@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace HipodromoNacional.Modelos
 {
@@ -435,5 +435,37 @@ namespace HipodromoNacional.Modelos
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
         public string? Estado { get; set; }
+    }
+
+    public class RolDTO
+    {
+        public int IdRol { get; set; }
+        public string? NombreRol { get; set; }
+        public string? Descripcion { get; set; }
+    }
+
+    public class UsuarioDTO
+    {
+        public int IdUsuario { get; set; }
+
+        [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
+        public string? Nombre { get; set; }
+
+        public string? Contrasena { get; set; }
+        public string? ContrasenaHash { get; set; }
+
+        [Required(ErrorMessage = "Seleccione un rol.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Seleccione un rol.")]
+        public int IdRol { get; set; }
+        public string? NombreRol { get; set; }
+
+        public int? IdPropietario { get; set; }
+        public string? NombrePropietario { get; set; }
+
+        public int? IdVeterinario { get; set; }
+        public string? NombreVeterinario { get; set; }
+
+        public bool Activo { get; set; } = true;
+        public DateTime FechaCreacion { get; set; } = DateTime.Now;
     }
 }

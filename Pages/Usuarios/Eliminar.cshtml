@@ -1,0 +1,62 @@
+@page
+@model HipodromoNacional.Pages.Usuarios.EliminarModel
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<div class="container px-4">
+    <div class="my-4">
+        <h1 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> ¿Eliminar Usuario?</h1>
+        <p class="text-muted">¿Está seguro de que desea eliminar el siguiente usuario? Esta acción es irreversible y removerá el acceso al sistema.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-danger shadow-sm">
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="Usuario.IdUsuario" />
+
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>Nombre de Usuario:</th>
+                                <td>@Model.Usuario.Nombre</td>
+                            </tr>
+                            <tr>
+                                <th>Rol:</th>
+                                <td><span class="badge bg-info text-dark">@Model.Usuario.NombreRol</span></td>
+                            </tr>
+                            <tr>
+                                <th>Vinculado A:</th>
+                                <td>
+                                    @if (Model.Usuario.IdPropietario.HasValue)
+                                    {
+                                        <span>Propietario: @Model.Usuario.NombrePropietario</span>
+                                    }
+                                    else if (Model.Usuario.IdVeterinario.HasValue)
+                                    {
+                                        <span>Veterinario: @Model.Usuario.NombreVeterinario</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">(Ninguno)</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Estado de Cuenta:</th>
+                                <td><span class="badge bg-secondary">@(Model.Usuario.Activo ? "Activo" : "Inactivo")</span></td>
+                            </tr>
+                        </table>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-page="./Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Cancelar</a>
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Eliminar Definitivamente</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -85,5 +85,32 @@ namespace HipodromoNacional.Repositorios
 
             return factura;
         }
+
+        public async Task<IEnumerable<FacturaDetalleDTO>> ObtenerTodasFacturasAsync(int? idPropietario = null)
+        {
+            var sql = @"
+                SELECT 
+                    f.id_factura AS IdFactura,
+                    f.codigo_factura AS CodigoFactura,
+                    p.nombre || ' ' || p.apellido1 AS ClienteNombre,
+                    e.nombre AS EventoNombre,
+                    f.subtotal AS Subtotal,
+                    f.total AS Total,
+                    ep.nombre_estado AS EstadoPago,
+                    f.fecha_emision AS FechaEmision
+                FROM factura f
+                JOIN propietario p ON f.id_propietario = p.id_propietario
+                JOIN evento e ON f.id_evento = e.id_evento
+                JOIN estado_pago ep ON f.id_estado_pago = ep.id_estado_pago";
+            
+            if (idPropietario.HasValue)
+            {
+                sql += " WHERE f.id_propietario = @IdPropietario ORDER BY f.id_factura DESC";
+                return await _db.QueryAsync<FacturaDetalleDTO>(sql, new { IdPropietario = idPropietario.Value });
+            }
+            
+            sql += " ORDER BY f.id_factura DESC";
+            return await _db.QueryAsync<FacturaDetalleDTO>(sql);
+        }
     }
 }

@@ -1,0 +1,146 @@
+@page
+@model HipodromoNacional.Pages.Facturacion.DetalleModel
+@{
+    ViewData["Title"] = "Detalle de Factura";
+}
+
+<div class="container px-4">
+    <div class="d-flex justify-content-between align-items-center my-4">
+        <h1><i class="bi bi-file-earmark-text text-info"></i> Detalle de Factura</h1>
+        <a asp-page="./Historial" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver al Historial</a>
+    </div>
+
+    @if (Model.Factura != null)
+    {
+        <div class="row">
+            <!-- Factura Madre -->
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <span class="fs-5">Factura: <strong>@Model.Factura.CodigoFactura</strong></span>
+                        <span class="badge @(Model.Factura.EstadoPago == "Pagada" ? "bg-success" : "bg-warning text-dark")">@Model.Factura.EstadoPago</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-sm-6">
+                                <h6 class="text-muted">DATOS DEL CLIENTE:</h6>
+                                <h5><strong>@Model.Factura.ClienteNombre</strong></h5>
+                                <p class="mb-1"><strong>Cédula:</strong> @Model.Factura.ClienteCedula</p>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <h6 class="text-muted">DETALLE EMISIÓN:</h6>
+                                <p class="mb-1"><strong>Evento:</strong> @Model.Factura.EventoNombre (@Model.Factura.EventoCodigo)</p>
+                                <p class="mb-1"><strong>Fecha Emisión:</strong> @Model.Factura.FechaEmision.ToString("dd/MM/yyyy")</p>
+                                @if (Model.Factura.FechaVencimiento.HasValue)
+                                {
+                                    <p class="mb-1"><strong>Fecha Vencimiento:</strong> @Model.Factura.FechaVencimiento.Value.ToString("dd/MM/yyyy")</p>
+                                }
+                            </div>
+                        </div>
+
+                        <h5 class="border-bottom pb-2">Conceptos Facturados</h5>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-end">Precio Unitario</th>
+                                        <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in Model.Factura.Lineas)
+                                    {
+                                        <tr>
+                                            <td>@line.Descripcion</td>
+                                            <td class="text-center">@line.Cantidad.ToString("0.00")</td>
+                                            <td class="text-end">@line.PrecioUnitario.ToString("C")</td>
+                                            <td class="text-end">@line.SubtotalLinea.ToString("C")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Resumen Financiero -->
+                        <div class="row justify-content-end">
+                            <div class="col-md-5">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <th>Subtotal bruto:</th>
+                                        <td class="text-end">@Model.Factura.Subtotal.ToString("C")</td>
+                                    </tr>
+                                    @if (Model.Factura.PorcentajeDescuento > 0)
+                                    {
+                                        <tr class="text-success">
+                                            <th>Descuento (@Model.Factura.PorcentajeDescuento.ToString("0.00")%):</th>
+                                            <td class="text-end">- @Model.Factura.MontoDescuento.ToString("C")</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <th>Base Imponible:</th>
+                                        <td class="text-end border-top">@Model.Factura.BaseImponible.ToString("C")</td>
+                                    </tr>
+                                    <tr>
+                                        <th>IVA (13%):</th>
+                                        <td class="text-end">@Model.Factura.ImpuestoIva.ToString("C")</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Comisión Administrativa (5%):</th>
+                                        <td class="text-end">@Model.Factura.ComisionAdmin.ToString("C")</td>
+                                    </tr>
+                                    <tr class="fs-5 border-top border-dark">
+                                        <th>TOTAL FACTURA:</th>
+                                        <td class="text-end"><strong>@Model.Factura.Total.ToString("C")</strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del Pago -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-secondary text-white">
+                        <span class="fs-5"><i class="bi bi-wallet2"></i> Información de Pago</span>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Factura.EstadoPago == "Pagada")
+                        {
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>Método de Pago:</span>
+                                    <strong>@Model.Factura.MetodoPago</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>Referencia:</span>
+                                    <strong>@Model.Factura.ReferenciaPago</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>Comprobante:</span>
+                                    <strong>@Model.Factura.ComprobantePago</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>Fecha de Pago:</span>
+                                    <strong>@(Model.Factura.FechaPago.HasValue ? Model.Factura.FechaPago.Value.ToString("dd/MM/yyyy HH:mm") : "-")</strong>
+                                </li>
+                            </ul>
+                            <div class="alert alert-success text-center mt-3 mb-0" role="alert">
+                                <i class="bi bi-patch-check-fill fs-4 d-block"></i> Factura pagada y registrada conforme a la legislación vigente.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning text-center mb-0" role="alert">
+                                <i class="bi bi-clock-history fs-4 d-block mb-2"></i> Esta factura se encuentra **pendiente de pago**.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
