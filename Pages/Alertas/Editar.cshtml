@@ -6,7 +6,7 @@
 
 <div class="card shadow-sm mt-4">
     <div class="card-header bg-warning text-dark">
-        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Cambiar Estado de Alerta</h4>
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Cambiar estado de alerta</h4>
     </div>
     <div class="card-body">
         @if (TempData["ErrorMessage"] != null)
@@ -37,7 +37,7 @@
                     <span asp-validation-for="Alerta.Mensaje" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Fecha Alerta</label>
+                    <label class="form-label">Fecha alerta</label>
                     <input asp-for="Alerta.FechaAlerta" type="datetime-local" class="form-control" required data-val-date="Ingrese una fecha válida." />
                     <span asp-validation-for="Alerta.FechaAlerta" class="field-validation-error"></span>
                 </div>

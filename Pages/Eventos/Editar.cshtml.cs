@@ -28,9 +28,22 @@ namespace HipodromoNacional.Pages.Eventos
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Evento.CodigoEvento");
+            ModelState.Remove("Evento.Nombre");
+            ModelState.Remove("Evento.TipoCarrera");
+            ModelState.Remove("Evento.DistanciaMetros");
+            ModelState.Remove("Evento.PrecioInscripcion");
+
+            if (!ModelState.IsValid) return Page();
+
             try
             {
-                await _repo.ActualizarEventoAsync(Evento);
+                bool success = await _repo.ActualizarEventoAsync(Evento);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró el evento especificado o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Evento actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }

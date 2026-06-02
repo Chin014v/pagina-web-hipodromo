@@ -37,16 +37,6 @@ namespace HipodromoNacional.Repositorios
                 WHERE a.id_alerta = @Id", new { Id = id });
         }
 
-        public async Task<bool> CrearAlertaAsync(int idCaballo, string mensaje)
-        {
-            var parameters = new DynamicParameters();
-            parameters.Add("p_id_caballo", idCaballo);
-            parameters.Add("p_mensaje", mensaje);
-
-            int rows = await _db.ExecuteAsync("sp_insertar_alerta_certificacion", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
-        }
-
         public async Task<bool> ActualizarAlertaAsync(int id, string estado, string mensaje, DateTime fechaAlerta)
         {
             var parameters = new DynamicParameters();

@@ -34,7 +34,12 @@ namespace HipodromoNacional.Pages.Razas
 
             try
             {
-                await _repo.ActualizarRazaAsync(Raza);
+                bool success = await _repo.ActualizarRazaAsync(Raza);
+                if (!success)
+                {
+                    ModelState.AddModelError(string.Empty, "No se encontró la raza o no hubo cambios.");
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Raza actualizada exitosamente.";
                 return RedirectToPage("./Index");
             }

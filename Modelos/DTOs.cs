@@ -7,19 +7,25 @@ namespace HipodromoNacional.Modelos
         public int IdPropietario { get; set; }
 
         [Required(ErrorMessage = "La cédula es obligatoria.")]
+        [StringLength(20, ErrorMessage = "La cédula no puede superar los 20 caracteres.")]
+        [RegularExpression(@"^[0-9\-]{9,20}$", ErrorMessage = "La cédula debe ser válida (solo números y guiones, mínimo 9 caracteres).")]
         public string? Cedula { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El nombre no puede superar los 80 caracteres.")]
         public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "El primer apellido es obligatorio.")]
+        [StringLength(50, ErrorMessage = "El primer apellido no puede superar los 50 caracteres.")]
         public string? Apellido1 { get; set; }
 
+        [StringLength(50, ErrorMessage = "El segundo apellido no puede superar los 50 caracteres.")]
         public string? Apellido2 { get; set; }
         public int IdBarrio { get; set; }
         public bool DescuentoProximaFactura { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
     }
 
@@ -28,12 +34,15 @@ namespace HipodromoNacional.Modelos
         public int IdPropietario { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El nombre no puede superar los 80 caracteres.")]
         public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "El primer apellido es obligatorio.")]
+        [StringLength(50, ErrorMessage = "El primer apellido no puede superar los 50 caracteres.")]
         public string? Apellido1 { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
     }
 
@@ -42,15 +51,18 @@ namespace HipodromoNacional.Modelos
         public int IdCaballo { get; set; }
 
         [Required(ErrorMessage = "El código único es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El código del caballo no puede superar los 20 caracteres.")]
         [RegularExpression(@"^[A-Z]{3}-\d{3}$", ErrorMessage = "El código del caballo debe tener el formato CAB-000 (3 letras mayúsculas, un guion y 3 números).")]
         public string? CodigoUnico { get; set; }
 
         [Required(ErrorMessage = "El nombre del caballo es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El nombre del caballo no puede superar los 100 caracteres.")]
         public string? Nombre { get; set; }
 
         public DateOnly FechaNacimiento { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
         [Required(ErrorMessage = "Seleccione el sexo del caballo.")]
+        [StringLength(10, ErrorMessage = "El sexo no puede superar los 10 caracteres.")]
         public string? Sexo { get; set; }
 
         [Required(ErrorMessage = "Seleccione una raza.")]
@@ -62,6 +74,7 @@ namespace HipodromoNacional.Modelos
         public decimal PesoKg { get; set; }
 
         [Required(ErrorMessage = "Seleccione el estado de salud.")]
+        [StringLength(30, ErrorMessage = "El estado de salud no puede superar los 30 caracteres.")]
         public string? EstadoSalud { get; set; }
 
         [Required(ErrorMessage = "Seleccione un propietario.")]
@@ -74,16 +87,19 @@ namespace HipodromoNacional.Modelos
         public int IdEvento { get; set; }
 
         [Required(ErrorMessage = "El código del evento es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El código del evento no puede superar los 20 caracteres.")]
         [RegularExpression(@"^[A-Z]{3}-\d{3}$", ErrorMessage = "El código del evento debe tener el formato EVE-000 (3 letras mayúsculas, un guion y 3 números).")]
         public string? CodigoEvento { get; set; }
 
         [Required(ErrorMessage = "El nombre de la carrera es obligatorio.")]
+        [StringLength(150, ErrorMessage = "El nombre de la carrera no puede superar los 150 caracteres.")]
         public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "La fecha y hora son obligatorias.")]
         public DateTime Fecha { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "El tipo de carrera es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El tipo de carrera no puede superar los 80 caracteres.")]
         public string? TipoCarrera { get; set; }
 
         [Required(ErrorMessage = "La distancia es obligatoria.")]
@@ -99,6 +115,7 @@ namespace HipodromoNacional.Modelos
         public decimal PrecioInscripcion { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
     }
 
@@ -107,9 +124,11 @@ namespace HipodromoNacional.Modelos
         public int IdEstablo { get; set; }
 
         [Required(ErrorMessage = "El código es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El código no puede superar los 20 caracteres.")]
         public string? Codigo { get; set; }
 
         [Required(ErrorMessage = "La ubicación es obligatoria.")]
+        [StringLength(200, ErrorMessage = "La ubicación no puede superar los 200 caracteres.")]
         public string? Ubicacion { get; set; }
 
         [Required(ErrorMessage = "La capacidad es obligatoria.")]
@@ -117,6 +136,7 @@ namespace HipodromoNacional.Modelos
         public int Capacidad { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
     }
 
@@ -161,6 +181,7 @@ namespace HipodromoNacional.Modelos
         public int IdInscripcion { get; set; }
 
         [Required(ErrorMessage = "El código de inscripción es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El código de inscripción no puede superar los 20 caracteres.")]
         public string? CodigoInscripcion { get; set; }
 
         [Required(ErrorMessage = "El evento es obligatorio.")]
@@ -175,8 +196,10 @@ namespace HipodromoNacional.Modelos
         public DateOnly FechaInscripcion { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
 
+        [StringLength(500, ErrorMessage = "Las observaciones no pueden superar los 500 caracteres.")]
         public string? Observaciones { get; set; }
 
         public string? NombreEvento { get; set; }
@@ -202,6 +225,7 @@ namespace HipodromoNacional.Modelos
         [Range(0, double.MaxValue, ErrorMessage = "El premio no puede ser negativo.")]
         public decimal PremioObtenido { get; set; }
 
+        [StringLength(500, ErrorMessage = "Las observaciones no pueden superar los 500 caracteres.")]
         public string? Observaciones { get; set; }
         public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
@@ -215,6 +239,7 @@ namespace HipodromoNacional.Modelos
         public int IdHistorial { get; set; }
 
         [Required(ErrorMessage = "El código de registro es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El código de registro no puede superar los 20 caracteres.")]
         public string? CodigoRegistro { get; set; }
 
         [Required(ErrorMessage = "El caballo es obligatorio.")]
@@ -226,8 +251,10 @@ namespace HipodromoNacional.Modelos
         public int IdVeterinario { get; set; }
 
         [Required(ErrorMessage = "El diagnóstico es obligatorio.")]
+        [StringLength(500, ErrorMessage = "El diagnóstico no puede superar los 500 caracteres.")]
         public string? Diagnostico { get; set; }
 
+        [StringLength(500, ErrorMessage = "El tratamiento no puede superar los 500 caracteres.")]
         public string? Tratamiento { get; set; }
 
         [Required(ErrorMessage = "La fecha de revisión es obligatoria.")]
@@ -237,6 +264,7 @@ namespace HipodromoNacional.Modelos
         public DateOnly FechaVencimientoCertificado { get; set; }
 
         public bool CertificadoVigente { get; set; }
+        [StringLength(500, ErrorMessage = "Las observaciones no pueden superar los 500 caracteres.")]
         public string? Observaciones { get; set; }
 
         public string? NombreCaballo { get; set; }
@@ -251,9 +279,11 @@ namespace HipodromoNacional.Modelos
         public int IdCaballo { get; set; }
 
         [Required(ErrorMessage = "El mensaje es obligatorio.")]
+        [StringLength(500, ErrorMessage = "El mensaje no puede superar los 500 caracteres.")]
         public string? Mensaje { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
 
         [Required(ErrorMessage = "La fecha de alerta es obligatoria.")]
@@ -267,12 +297,15 @@ namespace HipodromoNacional.Modelos
         public int IdSuministro { get; set; }
 
         [Required(ErrorMessage = "El código es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El código no puede superar los 20 caracteres.")]
         public string? Codigo { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(150, ErrorMessage = "El nombre no puede superar los 150 caracteres.")]
         public string? NombreSuministro { get; set; }
 
         [Required(ErrorMessage = "El tipo es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El tipo no puede superar los 80 caracteres.")]
         public string? Tipo { get; set; }
 
         [Required(ErrorMessage = "El proveedor es obligatorio.")]
@@ -287,9 +320,11 @@ namespace HipodromoNacional.Modelos
         public DateOnly FechaIngreso { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
         [Required(ErrorMessage = "La unidad de medida es obligatoria.")]
+        [StringLength(20, ErrorMessage = "La unidad de medida no puede superar los 20 caracteres.")]
         public string? UnidadMedida { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
 
         public string? NombreProveedor { get; set; }
@@ -315,8 +350,10 @@ namespace HipodromoNacional.Modelos
         public decimal Cantidad { get; set; }
 
         [Required(ErrorMessage = "La unidad es obligatoria.")]
+        [StringLength(20, ErrorMessage = "La unidad no puede superar los 20 caracteres.")]
         public string? Unidad { get; set; }
 
+        [StringLength(500, ErrorMessage = "Las observaciones no pueden superar los 500 caracteres.")]
         public string? Observaciones { get; set; }
 
         public string? NombreCaballo { get; set; }
@@ -341,6 +378,7 @@ namespace HipodromoNacional.Modelos
         public DateOnly? FechaSalida { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
 
         public string? NombreCaballo { get; set; }
@@ -352,15 +390,21 @@ namespace HipodromoNacional.Modelos
         public int IdProveedor { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(150, ErrorMessage = "El nombre no puede superar los 150 caracteres.")]
         public string? Nombre { get; set; }
 
+        [StringLength(100, ErrorMessage = "El contacto no puede superar los 100 caracteres.")]
         public string? Contacto { get; set; }
+
+        [StringLength(20, ErrorMessage = "El teléfono no puede superar los 20 caracteres.")]
         public string? Telefono { get; set; }
 
         [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido.")]
+        [StringLength(150, ErrorMessage = "El correo no puede superar los 150 caracteres.")]
         public string? Correo { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
     }
 
@@ -373,6 +417,7 @@ namespace HipodromoNacional.Modelos
         public int IdPropietario { get; set; }
 
         [Required(ErrorMessage = "El tipo de beneficio es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El tipo de beneficio no puede superar los 80 caracteres.")]
         public string? TipoBeneficio { get; set; }
 
         [Required(ErrorMessage = "El descuento es obligatorio.")]
@@ -383,6 +428,7 @@ namespace HipodromoNacional.Modelos
         public DateOnly? FechaAplicacion { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
 
         public string? NombrePropietario { get; set; }
@@ -405,11 +451,14 @@ namespace HipodromoNacional.Modelos
         public int IdRaza { get; set; }
 
         [Required(ErrorMessage = "El nombre de la raza es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El nombre de la raza no puede superar los 80 caracteres.")]
         public string? NombreRaza { get; set; }
 
+        [StringLength(300, ErrorMessage = "La descripción no puede superar los 300 caracteres.")]
         public string? Descripcion { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
     }
 
@@ -418,25 +467,34 @@ namespace HipodromoNacional.Modelos
         public int IdVeterinario { get; set; }
 
         [Required(ErrorMessage = "La cédula es obligatoria.")]
+        [StringLength(20, ErrorMessage = "La cédula no puede superar los 20 caracteres.")]
+        [RegularExpression(@"^[0-9\-]{9,20}$", ErrorMessage = "La cédula debe ser válida (solo números y guiones, mínimo 9 caracteres).")]
         public string? Cedula { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El nombre no puede superar los 80 caracteres.")]
         public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "El primer apellido es obligatorio.")]
+        [StringLength(50, ErrorMessage = "El primer apellido no puede superar los 50 caracteres.")]
         public string? Apellido1 { get; set; }
 
+        [StringLength(50, ErrorMessage = "El segundo apellido no puede superar los 50 caracteres.")]
         public string? Apellido2 { get; set; }
 
         [Required(ErrorMessage = "El número de colegio es obligatorio.")]
+        [StringLength(30, ErrorMessage = "El número de colegio no puede superar los 30 caracteres.")]
         public string? NumeroColegio { get; set; }
 
+        [StringLength(20, ErrorMessage = "El teléfono no puede superar los 20 caracteres.")]
         public string? Telefono { get; set; }
 
         [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido.")]
+        [StringLength(150, ErrorMessage = "El correo no puede superar los 150 caracteres.")]
         public string? Correo { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(20, ErrorMessage = "El estado no puede superar los 20 caracteres.")]
         public string? Estado { get; set; }
     }
 
@@ -452,6 +510,7 @@ namespace HipodromoNacional.Modelos
         public int IdUsuario { get; set; }
 
         [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
+        [StringLength(80, ErrorMessage = "El nombre de usuario no puede superar los 80 caracteres.")]
         public string? Nombre { get; set; }
 
         public string? Contrasena { get; set; }

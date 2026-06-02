@@ -38,15 +38,33 @@ namespace HipodromoNacional.Pages.EstablosMgt.Asignacion
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Asignacion.IdCaballo");
+
+            if (!ModelState.IsValid)
+            {
+                var establos = await _db.QueryAsync<EstabloDTO>("SELECT id_establo AS IdEstablo, codigo AS Codigo, ubicacion AS Ubicacion FROM establo ORDER BY codigo");
+                Establos = establos.ToList();
+                return Page();
+            }
+
             try
             {
-                await _repo.ActualizarAsignacionAsync(Asignacion);
+                bool success = await _repo.ActualizarAsignacionAsync(Asignacion);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró la asignación especificada o no hubo cambios.";
+                    var establos = await _db.QueryAsync<EstabloDTO>("SELECT id_establo AS IdEstablo, codigo AS Codigo, ubicacion AS Ubicacion FROM establo ORDER BY codigo");
+                    Establos = establos.ToList();
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Asignación actualizada exitosamente.";
                 return RedirectToPage("./Index");
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error al actualizar: {ex.Message}";
+                var establos = await _db.QueryAsync<EstabloDTO>("SELECT id_establo AS IdEstablo, codigo AS Codigo, ubicacion AS Ubicacion FROM establo ORDER BY codigo");
+                Establos = establos.ToList();
                 return Page();
             }
         }

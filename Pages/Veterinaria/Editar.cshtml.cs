@@ -38,7 +38,12 @@ namespace HipodromoNacional.Pages.Veterinaria
 
             try
             {
-                await _repo.ActualizarHistorialAsync(Historial);
+                bool success = await _repo.ActualizarHistorialAsync(Historial);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró el registro veterinario o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Registro veterinario actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }
