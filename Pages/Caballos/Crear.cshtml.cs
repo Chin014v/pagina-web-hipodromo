@@ -31,6 +31,15 @@ namespace HipodromoNacional.Pages.Caballos
         public async Task OnGetAsync()
         {
             await CargarListasAsync();
+            try
+            {
+                int maxId = await _db.ExecuteScalarAsync<int?>("SELECT MAX(id_caballo) FROM public.caballo") ?? 0;
+                Caballo.CodigoUnico = $"CAB-{(maxId + 1):D3}";
+            }
+            catch
+            {
+                Caballo.CodigoUnico = "CAB-001";
+            }
         }
 
         private async Task CargarListasAsync()

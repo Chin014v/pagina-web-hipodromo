@@ -24,7 +24,7 @@ namespace HipodromoNacional.Pages.Veterinaria
         public List<CaballoDTO> Caballos { get; set; } = new();
         public List<VeterinarioDTO> Veterinarios { get; set; } = new();
 
-        public async Task OnGetAsync()
+        private async Task CargarListasAsync()
         {
             var caballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, nombre AS Nombre FROM caballo ORDER BY nombre");
             Caballos = caballos.ToList();
@@ -33,9 +33,27 @@ namespace HipodromoNacional.Pages.Veterinaria
             Veterinarios = vets.ToList();
         }
 
+        public async Task OnGetAsync()
+        {
+            await CargarListasAsync();
+            try
+            {
+                int maxId = await _db.ExecuteScalarAsync<int?>("SELECT MAX(id_historial) FROM public.historial_veterinario") ?? 0;
+                Historial.CodigoRegistro = $"REG-{(maxId + 1):D3}";
+            }
+            catch
+            {
+                Historial.CodigoRegistro = "REG-001";
+            }
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                await CargarListasAsync();
+                return Page();
+            }
 
             try
             {
@@ -46,6 +64,7 @@ namespace HipodromoNacional.Pages.Veterinaria
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error al guardar: {ex.Message}";
+                await CargarListasAsync();
                 return Page();
             }
         }

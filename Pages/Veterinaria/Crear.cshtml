@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model HipodromoNacional.Pages.Veterinaria.CrearModel
 @{
     ViewData["Title"] = "Nuevo Registro Veterinario";
@@ -40,7 +40,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Código Registro</label>
-                    <input asp-for="Historial.CodigoRegistro" class="form-control" required />
+                    <input asp-for="Historial.CodigoRegistro" class="form-control" readonly required />
                     <span asp-validation-for="Historial.CodigoRegistro" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">

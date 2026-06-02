@@ -24,7 +24,7 @@ namespace HipodromoNacional.Pages.Inscripciones
         public List<EventoDTO> Eventos { get; set; } = new();
         public List<CaballoDTO> Caballos { get; set; } = new();
 
-        public async Task OnGetAsync()
+        private async Task CargarListasAsync()
         {
             var eventos = await _db.QueryAsync<EventoDTO>("SELECT id_evento AS IdEvento, codigo_evento AS CodigoEvento, nombre AS Nombre FROM evento WHERE estado IN ('Programado','EnCurso') ORDER BY nombre");
             Eventos = eventos.ToList();
@@ -33,9 +33,27 @@ namespace HipodromoNacional.Pages.Inscripciones
             Caballos = caballos.ToList();
         }
 
+        public async Task OnGetAsync()
+        {
+            await CargarListasAsync();
+            try
+            {
+                int maxId = await _db.ExecuteScalarAsync<int?>("SELECT MAX(id_inscripcion) FROM public.inscripcion") ?? 0;
+                Inscripcion.CodigoInscripcion = $"INS-{(maxId + 1):D3}";
+            }
+            catch
+            {
+                Inscripcion.CodigoInscripcion = "INS-001";
+            }
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                await CargarListasAsync();
+                return Page();
+            }
 
             try
             {
@@ -46,6 +64,7 @@ namespace HipodromoNacional.Pages.Inscripciones
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error al guardar: {ex.Message}";
+                await CargarListasAsync();
                 return Page();
             }
         }
