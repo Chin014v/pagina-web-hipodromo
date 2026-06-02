@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model HipodromoNacional.Pages.Propietarios.CrearModel
 @{
     ViewData["Title"] = "Crear Propietario";
@@ -89,7 +89,7 @@
                     </label>
                     <div id="telefonosContainer">
                         <div class="input-group mb-2">
-                            <input type="text" name="Telefonos" class="form-control" placeholder="Número" required />
+                            <input type="text" name="Telefonos" class="form-control" placeholder="Número" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                             <select name="TiposTelefonos" class="form-select" required>
                                 <option value="Personal">Personal</option>
                                 <option value="Trabajo">Trabajo</option>
@@ -129,7 +129,7 @@
     function addTelefono() {
         const template = `
             <div class="input-group mb-2">
-                <input type="text" name="Telefonos" class="form-control" placeholder="Número" required />
+                <input type="text" name="Telefonos" class="form-control" placeholder="Número" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                 <select name="TiposTelefonos" class="form-select" required>
                     <option value="Personal">Personal</option><option value="Trabajo">Trabajo</option><option value="Otro">Otro</option>
                 </select>
@@ -238,12 +238,6 @@
                 const data = await response.json();
                 
                 ddlBarrio.disabled = false;
-                
-                // Add default option
-                const defaultOpt = document.createElement("option");
-                defaultOpt.value = "";
-                defaultOpt.textContent = "Seleccione...";
-                ddlBarrio.appendChild(defaultOpt);
 
                 data.forEach(item => {
                     const opt = document.createElement("option");

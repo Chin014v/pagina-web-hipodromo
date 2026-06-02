@@ -35,7 +35,12 @@ namespace HipodromoNacional.Pages.Eventos
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error al guardar: {ex.Message}";
+                string message = ex.Message;
+                if (message.Contains("evento_codigo_evento_key") || message.Contains("23505") || message.Contains("duplicate key"))
+                {
+                    message = "El código del evento ya se encuentra registrado.";
+                }
+                TempData["ErrorMessage"] = $"Error al guardar: {message}";
                 return Page();
             }
         }

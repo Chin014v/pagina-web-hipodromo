@@ -58,7 +58,12 @@ namespace HipodromoNacional.Pages.Caballos
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error al guardar: {ex.Message}";
+                string message = ex.Message;
+                if (message.Contains("caballo_codigo_unico_key") || message.Contains("23505") || message.Contains("duplicate key"))
+                {
+                    message = "El código único del caballo ya se encuentra registrado.";
+                }
+                TempData["ErrorMessage"] = $"Error al guardar: {message}";
                 await CargarListasAsync();
                 return Page();
             }

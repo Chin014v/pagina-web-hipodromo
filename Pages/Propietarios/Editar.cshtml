@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+@page "{id:int}"
 @model HipodromoNacional.Pages.Propietarios.EditarModel
 @{
     ViewData["Title"] = "Editar Propietario";
@@ -18,11 +18,6 @@
 
         <form method="post" novalidate>
             <input type="hidden" asp-for="Propietario.IdPropietario" data-val-number="Ingrese un número válido." />
-
-            <div class="alert alert-info">
-                Según las reglas del proyecto (Punto 7), se permite modificar al menos 3 campos. 
-                Aquí modificaremos: <strong>Nombre, Primer Apellido y Estado</strong>.
-            </div>
 
             <div class="mb-3">
                 <label class="form-label">Nombre</label>

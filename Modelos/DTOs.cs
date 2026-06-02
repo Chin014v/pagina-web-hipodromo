@@ -42,6 +42,7 @@ namespace HipodromoNacional.Modelos
         public int IdCaballo { get; set; }
 
         [Required(ErrorMessage = "El código único es obligatorio.")]
+        [RegularExpression(@"^[A-Z]{3}-\d{3}$", ErrorMessage = "El código del caballo debe tener el formato CAB-000 (3 letras mayúsculas, un guion y 3 números).")]
         public string? CodigoUnico { get; set; }
 
         [Required(ErrorMessage = "El nombre del caballo es obligatorio.")]
@@ -73,6 +74,7 @@ namespace HipodromoNacional.Modelos
         public int IdEvento { get; set; }
 
         [Required(ErrorMessage = "El código del evento es obligatorio.")]
+        [RegularExpression(@"^[A-Z]{3}-\d{3}$", ErrorMessage = "El código del evento debe tener el formato EVE-000 (3 letras mayúsculas, un guion y 3 números).")]
         public string? CodigoEvento { get; set; }
 
         [Required(ErrorMessage = "El nombre de la carrera es obligatorio.")]

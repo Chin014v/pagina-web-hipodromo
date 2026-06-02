@@ -37,7 +37,7 @@
                     <td>@c.Nombre</td>
                     <td>@c.Sexo</td>
                     <td>@c.PesoKg</td>
-                    <td>@c.EstadoSalud</td>
+                    <td>@(c.EstadoSalud == "EnTratamiento" ? "En Tratamiento" : c.EstadoSalud == "NoApto" ? "No Apto" : c.EstadoSalud)</td>
                     <td>
                         <a asp-page="./Editar" asp-route-id="@c.IdCaballo" class="btn btn-sm btn-outline-warning" title="Editar"><i class="bi bi-pencil"></i></a>
                         <a asp-page="./Eliminar" asp-route-id="@c.IdCaballo" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>

@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+@page "{id:int}"
 @model HipodromoNacional.Pages.Eventos.EditarModel
 @{
     ViewData["Title"] = "Editar Evento";
@@ -16,10 +16,6 @@
                 <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
             </div>
         }
-
-        <div class="alert alert-info">
-            Según las reglas del proyecto (Punto 7), modificaremos al menos 3 campos: <strong>Fecha, Premio Total y Estado</strong>.
-        </div>
 
         <form method="post" novalidate>
             <input type="hidden" asp-for="Evento.IdEvento" data-val-number="Ingrese un número válido." />

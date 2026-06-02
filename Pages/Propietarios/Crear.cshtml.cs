@@ -97,14 +97,24 @@ namespace HipodromoNacional.Pages.Propietarios
             }
             catch (PostgresException ex)
             {
-                TempData["ErrorMessage"] = $"Error en la base de datos: {ex.MessageText}";
+                string msg = ex.MessageText;
+                if (ex.SqlState == "23505" || ex.ConstraintName == "propietario_cedula_key" || msg.Contains("propietario_cedula_key") || msg.Contains("cedula"))
+                {
+                    msg = "La cédula ingresada ya pertenece a un propietario registrado.";
+                }
+                TempData["ErrorMessage"] = $"Error en la base de datos: {msg}";
                 var list = await _db.QueryAsync<dynamic>("SELECT id_pais AS id, nombre_pais AS nombre FROM pais ORDER BY nombre_pais");
                 Paises = list.ToList();
                 return Page();
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Ocurrió un error inesperado: {ex.Message}";
+                string msg = ex.Message;
+                if (msg.Contains("propietario_cedula_key") || msg.Contains("23505") || msg.Contains("duplicate key"))
+                {
+                    msg = "La cédula ingresada ya pertenece a un propietario registrado.";
+                }
+                TempData["ErrorMessage"] = $"Ocurrió un error inesperado: {msg}";
                 var list = await _db.QueryAsync<dynamic>("SELECT id_pais AS id, nombre_pais AS nombre FROM pais ORDER BY nombre_pais");
                 Paises = list.ToList();
                 return Page();

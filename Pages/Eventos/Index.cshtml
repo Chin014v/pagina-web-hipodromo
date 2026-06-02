@@ -44,9 +44,17 @@
                         {
                             <span class="badge bg-info text-dark">Programado</span>
                         }
+                        else if (e.Estado == "EnCurso")
+                        {
+                            <span class="badge bg-warning text-dark">En Curso</span>
+                        }
                         else if (e.Estado == "Finalizado")
                         {
                             <span class="badge bg-success">Finalizado</span>
+                        }
+                        else if (e.Estado == "Cancelado")
+                        {
+                            <span class="badge bg-danger">Cancelado</span>
                         }
                         else
                         {
