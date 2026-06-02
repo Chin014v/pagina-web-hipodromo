@@ -33,7 +33,7 @@
                                 <a class="nav-link" asp-area="" asp-page="/Propietarios/Index"><i class="bi bi-people"></i> Propietarios</a>
                             </li>
                         }
-                        @if (User.Identity?.IsAuthenticated == true)
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Propietario") || User.IsInRole("EncargadoEstablo"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-page="/Caballos/Index"><i class="bi bi-heptagon"></i> Caballos</a>
@@ -78,7 +78,10 @@
                                     {
                                         <li><a class="dropdown-item" asp-page="/Inscripciones/Index"><i class="bi bi-pencil-square me-2 text-success"></i> Inscripciones</a></li>
                                     }
-                                    <li><a class="dropdown-item" asp-page="/Resultados/Index"><i class="bi bi-trophy me-2 text-primary"></i> Resultados</a></li>
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Propietario") || User.IsInRole("EncargadoEstablo"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/Resultados/Index"><i class="bi bi-trophy me-2 text-primary"></i> Resultados</a></li>
+                                    }
                                     @if (User.IsInRole("Administrador") || User.IsInRole("Veterinario"))
                                     {
                                         <li><a class="dropdown-item" asp-page="/Veterinaria/Index"><i class="bi bi-heart-pulse me-2 text-danger"></i> Historial Veterinario</a></li>

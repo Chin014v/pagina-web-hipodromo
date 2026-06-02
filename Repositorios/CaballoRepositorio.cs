@@ -50,8 +50,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_peso_kg", c.PesoKg);
             parameters.Add("p_estado_salud", c.EstadoSalud);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_caballo", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_caballo", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarCaballoAsync(int id)
@@ -59,8 +59,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id_caballo", id);
             
-            int rows = await _db.ExecuteAsync("sp_eliminar_caballo", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_caballo", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
     }
 }

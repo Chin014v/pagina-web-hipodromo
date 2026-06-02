@@ -72,8 +72,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_fecha_vencimiento", dto.FechaVencimientoCertificado.ToDateTime(TimeOnly.MinValue), DbType.Date);
             parameters.Add("p_observaciones", dto.Observaciones);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_historial_veterinario", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_historial_veterinario", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarHistorialAsync(int id)
@@ -81,8 +81,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id", id);
 
-            int rows = await _db.ExecuteAsync("sp_eliminar_historial_veterinario", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_historial_veterinario", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
     }
 }

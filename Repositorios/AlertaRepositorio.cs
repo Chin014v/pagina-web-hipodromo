@@ -45,8 +45,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_mensaje", mensaje);
             parameters.Add("p_fecha_alerta", fechaAlerta);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_alerta_certificacion", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_alerta_certificacion", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarAsync(int id)
@@ -54,8 +54,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id", id);
 
-            int rows = await _db.ExecuteAsync("sp_eliminar_alerta_certificacion", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_alerta_certificacion", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
     }
 }

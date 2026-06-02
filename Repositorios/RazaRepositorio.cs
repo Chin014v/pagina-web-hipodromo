@@ -35,8 +35,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_descripcion", r.Descripcion);
             parameters.Add("p_estado", r.Estado ?? "Activo");
 
-            int rows = await _db.ExecuteAsync("sp_insertar_raza", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_insertar_raza", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> ActualizarRazaAsync(RazaDTO r)
@@ -47,8 +47,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_descripcion", r.Descripcion);
             parameters.Add("p_estado", r.Estado);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_raza", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_raza", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarRazaAsync(int id)
@@ -56,8 +56,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id", id);
 
-            int rows = await _db.ExecuteAsync("sp_eliminar_raza", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_raza", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
     }
 }

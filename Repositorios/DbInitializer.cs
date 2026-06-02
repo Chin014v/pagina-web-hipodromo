@@ -11,6 +11,11 @@ namespace HipodromoNacional.Repositorios
             {
                 Console.WriteLine("=== Iniciando Migración e Inicialización de Base de Datos ===");
                 
+                if (db.State != ConnectionState.Open)
+                {
+                    db.Open();
+                }
+
                 // Ruta del script en la carpeta raíz del proyecto (un nivel arriba del proyecto C#)
                 string rootDir = Path.GetFullPath(Path.Combine(contentRootPath, ".."));
                 string scriptPath = Path.Combine(rootDir, "09_datos_adicionales_y_correcciones.sql");
@@ -27,13 +32,76 @@ namespace HipodromoNacional.Repositorios
                     string sql = File.ReadAllText(scriptPath);
                     
                     // Ejecutar el script SQL completo
-                    db.Open();
                     db.Execute(sql);
-                    Console.WriteLine("Script ejecutado exitosamente en Render Postgres.");
+                    Console.WriteLine("Script de correcciones ejecutado exitosamente en Render Postgres.");
                 }
                 else
                 {
                     Console.WriteLine($"ADVERTENCIA: No se encontró el script SQL en: {scriptPath}");
+                }
+
+                // Comprobar división territorial de Costa Rica
+                int countBarrios = 0;
+                try
+                {
+                    countBarrios = db.ExecuteScalar<int>("SELECT COUNT(*) FROM public.barrio;");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"No se pudo consultar la tabla barrio: {ex.Message}");
+                }
+
+                if (countBarrios < 100)
+                {
+                    string geoScriptPath = Path.Combine(rootDir, "01.5_geografia_costa_rica.sql");
+                    if (!File.Exists(geoScriptPath))
+                    {
+                        geoScriptPath = Path.Combine(contentRootPath, "01.5_geografia_costa_rica.sql");
+                    }
+
+                    if (File.Exists(geoScriptPath))
+                    {
+                        Console.WriteLine("Limpiando datos de geografía antiguos...");
+                        db.Execute(@"
+                            ALTER TABLE public.propietario DROP CONSTRAINT IF EXISTS fk_propietario_barrio;
+                            TRUNCATE TABLE public.barrio CASCADE;
+                            TRUNCATE TABLE public.distrito CASCADE;
+                            TRUNCATE TABLE public.canton CASCADE;
+                            TRUNCATE TABLE public.provincia CASCADE;
+                            TRUNCATE TABLE public.pais CASCADE;
+                        ");
+
+                        Console.WriteLine($"Cargando división territorial de Costa Rica desde: {geoScriptPath}...");
+                        string geoSql = File.ReadAllText(geoScriptPath);
+                        
+                        // Usar un timeout extendido (5 minutos) para evitar que falle en bases de datos remotas
+                        db.Execute(geoSql, commandTimeout: 300);
+                        Console.WriteLine("División territorial de Costa Rica cargada exitosamente.");
+
+                        Console.WriteLine("Actualizando propietarios y restableciendo clave foránea...");
+                        db.Execute(@"
+                            UPDATE public.propietario
+                            SET id_pais = 1,
+                                id_provincia = 1,
+                                id_canton = 101,
+                                id_distrito = 10101,
+                                id_barrio = 1010101;
+
+                            ALTER TABLE public.propietario DROP CONSTRAINT IF EXISTS fk_propietario_barrio;
+                            ALTER TABLE public.propietario
+                                ADD CONSTRAINT fk_propietario_barrio 
+                                FOREIGN KEY (id_pais, id_provincia, id_canton, id_distrito, id_barrio) 
+                                REFERENCES public.barrio(id_pais, id_provincia, id_canton, id_distrito, id_barrio);
+                        ");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"ADVERTENCIA: No se encontró el script de geografía en: {geoScriptPath}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"La división territorial de Costa Rica ya se encuentra cargada ({countBarrios} barrios detectados).");
                 }
             }
             catch (Exception ex)

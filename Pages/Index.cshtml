@@ -116,25 +116,28 @@
                     </div>
                 }
                 
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 dashboard-module-card">
-                        <div class="card-body">
-                            <h5 class="card-title text-info"><i class="bi bi-heptagon me-2"></i> Caballos</h5>
-                            <p class="card-text text-muted" style="font-size: 0.85rem;">@((User.IsInRole("Propietario")) ? "Mis Caballos registrados, identificación de códigos únicos, peso, género y control de salud." : "Fichero general de caballos, identificación de códigos únicos, peso, género y control de estado.")</p>
-                            <a asp-page="/Caballos/Index" class="btn btn-sm btn-info text-white w-100 mt-2"><i class="bi bi-arrow-right-circle me-1"></i> @((User.IsInRole("Propietario")) ? "Ver Mis Caballos" : "Abrir Registro")</a>
+                @if (User.IsInRole("Administrador") || User.IsInRole("Propietario") || User.IsInRole("EncargadoEstablo"))
+                {
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 dashboard-module-card">
+                            <div class="card-body">
+                                <h5 class="card-title text-info"><i class="bi bi-heptagon me-2"></i> Caballos</h5>
+                                <p class="card-text text-muted" style="font-size: 0.85rem;">@((User.IsInRole("Propietario")) ? "Mis Caballos registrados, identificación de códigos únicos, peso, género y control de salud." : "Fichero general de caballos, identificación de códigos únicos, peso, género y control de estado.")</p>
+                                <a asp-page="/Caballos/Index" class="btn btn-sm btn-info text-white w-100 mt-2"><i class="bi bi-arrow-right-circle me-1"></i> @((User.IsInRole("Propietario")) ? "Ver Mis Caballos" : "Abrir Registro")</a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 dashboard-module-card">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary"><i class="bi bi-calendar-event me-2"></i> Eventos y Carreras</h5>
-                            <p class="card-text text-muted" style="font-size: 0.85rem;">Programación de eventos oficiales, configuración de distancias, tipos de carreras y premios.</p>
-                            <a asp-page="/Eventos/Index" class="btn btn-sm btn-primary w-100 mt-2"><i class="bi bi-arrow-right-circle me-1"></i> Ver Eventos</a>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 dashboard-module-card">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><i class="bi bi-calendar-event me-2"></i> Eventos y Carreras</h5>
+                                <p class="card-text text-muted" style="font-size: 0.85rem;">Programación de eventos oficiales, configuración de distancias, tipos de carreras y premios.</p>
+                                <a asp-page="/Eventos/Index" class="btn btn-sm btn-primary w-100 mt-2"><i class="bi bi-arrow-right-circle me-1"></i> Ver Eventos</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 @if (User.IsInRole("Administrador") || User.IsInRole("EncargadoEstablo"))
                 {
@@ -195,15 +198,18 @@
             </div>
             
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 dashboard-module-card">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary"><i class="bi bi-trophy me-2"></i> Resultados Oficiales</h5>
-                            <p class="card-text text-muted" style="font-size: 0.85rem;">Registro de posiciones, cronometraje preciso en pista y cálculo dinámico de distribución de premios.</p>
-                            <a asp-page="/Resultados/Index" class="btn btn-sm btn-primary w-100 mt-2"><i class="bi bi-arrow-right-circle me-1"></i> Resultados</a>
+                @if (User.IsInRole("Administrador") || User.IsInRole("Propietario") || User.IsInRole("EncargadoEstablo"))
+                {
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 dashboard-module-card">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><i class="bi bi-trophy me-2"></i> Resultados Oficiales</h5>
+                                <p class="card-text text-muted" style="font-size: 0.85rem;">Registro de posiciones, cronometraje preciso en pista y cálculo dinámico de distribución de premios.</p>
+                                <a asp-page="/Resultados/Index" class="btn btn-sm btn-primary w-100 mt-2"><i class="bi bi-arrow-right-circle me-1"></i> Resultados</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 @if (User.IsInRole("Administrador") || User.IsInRole("Veterinario"))
                 {

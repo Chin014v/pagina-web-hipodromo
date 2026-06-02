@@ -21,6 +21,9 @@ namespace HipodromoNacional.Pages.Veterinaria
         [BindProperty]
         public HistorialVeterinarioDTO Historial { get; set; } = new();
 
+        [BindProperty]
+        public string EstadoSaludCaballo { get; set; } = "Saludable";
+
         public List<CaballoDTO> Caballos { get; set; } = new();
         public List<VeterinarioDTO> Veterinarios { get; set; } = new();
 
@@ -29,12 +32,25 @@ namespace HipodromoNacional.Pages.Veterinaria
             var caballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, nombre AS Nombre FROM caballo ORDER BY nombre");
             Caballos = caballos.ToList();
 
-            var vets = await _db.QueryAsync<VeterinarioDTO>("SELECT id_veterinario AS IdVeterinario, nombre AS Nombre, apellido1 AS Apellido1 FROM veterinario WHERE estado = 'Activo' ORDER BY nombre");
-            Veterinarios = vets.ToList();
+            var vetClaim = User.FindFirst("VeterinarioId");
+            if (vetClaim != null && int.TryParse(vetClaim.Value, out int vetId))
+            {
+                var vets = await _db.QueryAsync<VeterinarioDTO>("SELECT id_veterinario AS IdVeterinario, nombre AS Nombre, apellido1 AS Apellido1 FROM veterinario WHERE id_veterinario = @id", new { id = vetId });
+                Veterinarios = vets.ToList();
+                Historial.IdVeterinario = vetId;
+            }
+            else
+            {
+                var vets = await _db.QueryAsync<VeterinarioDTO>("SELECT id_veterinario AS IdVeterinario, nombre AS Nombre, apellido1 AS Apellido1 FROM veterinario WHERE estado = 'Activo' ORDER BY nombre");
+                Veterinarios = vets.ToList();
+            }
         }
 
         public async Task OnGetAsync()
         {
+            Historial.FechaRevision = DateOnly.FromDateTime(DateTime.Today);
+            Historial.FechaVencimientoCertificado = DateOnly.FromDateTime(DateTime.Today);
+
             await CargarListasAsync();
             try
             {
@@ -49,6 +65,15 @@ namespace HipodromoNacional.Pages.Veterinaria
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var vetClaim = User.FindFirst("VeterinarioId");
+            if (vetClaim != null && int.TryParse(vetClaim.Value, out int vetId))
+            {
+                Historial.IdVeterinario = vetId;
+            }
+
+            ModelState.Remove("Historial.NombreCaballo");
+            ModelState.Remove("Historial.NombreVeterinario");
+
             if (!ModelState.IsValid)
             {
                 await CargarListasAsync();
@@ -58,6 +83,10 @@ namespace HipodromoNacional.Pages.Veterinaria
             try
             {
                 await _repo.CrearHistorialAsync(Historial);
+
+                // Actualizar el estado de salud del caballo en la base de datos
+                await _db.ExecuteAsync("UPDATE public.caballo SET estado_salud = @Estado WHERE id_caballo = @IdCaballo", new { Estado = EstadoSaludCaballo, IdCaballo = Historial.IdCaballo });
+
                 TempData["SuccessMessage"] = "Registro veterinario creado exitosamente.";
                 return RedirectToPage("./Index");
             }

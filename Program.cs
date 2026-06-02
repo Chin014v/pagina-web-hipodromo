@@ -3,6 +3,7 @@ using Dapper;
 using Npgsql;
 using NpgsqlTypes;
 using HipodromoNacional.Repositorios;
+using Microsoft.AspNetCore.DataProtection;
 
 SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 
@@ -11,12 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDataProtection()
+        .UseEphemeralDataProtectionProvider();
+}
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdministradorOnly", policy => policy.RequireRole("Administrador"));
     options.AddPolicy("AdminOrVet", policy => policy.RequireRole("Administrador", "Veterinario"));
     options.AddPolicy("AdminOrEstablo", policy => policy.RequireRole("Administrador", "EncargadoEstablo"));
     options.AddPolicy("AdminOrProp", policy => policy.RequireRole("Administrador", "Propietario"));
+    options.AddPolicy("CaballosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
+    options.AddPolicy("EventosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
+    options.AddPolicy("ResultadosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
 });
 
 builder.Services.AddRazorPages(options =>
@@ -37,22 +47,22 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Establos/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Establos/Eliminar", "AdministradorOnly");
     
-    options.Conventions.AuthorizeFolder("/Caballos");
-    options.Conventions.AuthorizePage("/Caballos/Crear", "AdministradorOnly");
+    options.Conventions.AuthorizeFolder("/Caballos", "CaballosPolicy");
+    options.Conventions.AuthorizePage("/Caballos/Crear", "AdminOrProp");
     options.Conventions.AuthorizePage("/Caballos/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Caballos/Eliminar", "AdministradorOnly");
     
-    options.Conventions.AuthorizeFolder("/Eventos");
-    options.Conventions.AuthorizePage("/Eventos/Crear", "AdminOrProp");
+    options.Conventions.AuthorizeFolder("/Eventos", "EventosPolicy");
+    options.Conventions.AuthorizePage("/Eventos/Crear", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Eventos/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Eventos/Eliminar", "AdministradorOnly");
 
-    options.Conventions.AuthorizeFolder("/Resultados");
+    options.Conventions.AuthorizeFolder("/Resultados", "ResultadosPolicy");
     options.Conventions.AuthorizePage("/Resultados/Crear", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Resultados/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Resultados/Eliminar", "AdministradorOnly");
 
-    options.Conventions.AuthorizeFolder("/Inscripciones");
+    options.Conventions.AuthorizeFolder("/Inscripciones", "AdminOrProp");
     options.Conventions.AuthorizePage("/Inscripciones/Crear", "AdminOrProp");
     options.Conventions.AuthorizePage("/Inscripciones/Editar", "AdminOrProp");
     options.Conventions.AuthorizePage("/Inscripciones/Eliminar", "AdministradorOnly");

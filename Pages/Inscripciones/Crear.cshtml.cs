@@ -36,13 +36,13 @@ namespace HipodromoNacional.Pages.Inscripciones
                 var claim = User.FindFirst("PropietarioId");
                 if (claim != null && int.TryParse(claim.Value, out int idProp))
                 {
-                    var caballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, codigo_unico AS CodigoUnico, nombre AS Nombre FROM caballo WHERE id_propietario = @IdProp ORDER BY nombre", new { IdProp = idProp });
+                    var caballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, codigo_unico AS CodigoUnico, nombre AS Nombre FROM caballo WHERE id_propietario = @IdProp AND estado_salud = 'Saludable' ORDER BY nombre", new { IdProp = idProp });
                     Caballos = caballos.ToList();
                     return;
                 }
             }
 
-            var allCaballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, codigo_unico AS CodigoUnico, nombre AS Nombre FROM caballo ORDER BY nombre");
+            var allCaballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, codigo_unico AS CodigoUnico, nombre AS Nombre FROM caballo WHERE estado_salud = 'Saludable' ORDER BY nombre");
             Caballos = allCaballos.ToList();
         }
 
@@ -65,6 +65,13 @@ namespace HipodromoNacional.Pages.Inscripciones
             if (User.IsInRole("Propietario"))
             {
                 Inscripcion.Estado = "Pendiente";
+            }
+
+            // Check that the selected horse is Healthy (Saludable)
+            var horseStatus = await _db.ExecuteScalarAsync<string>("SELECT estado_salud FROM caballo WHERE id_caballo = @IdCaballo", new { IdCaballo = Inscripcion.IdCaballo });
+            if (horseStatus != "Saludable")
+            {
+                ModelState.AddModelError("Inscripcion.IdCaballo", "El caballo seleccionado no está apto o se encuentra en revisión (Tratamiento/No Apto).");
             }
 
             if (!ModelState.IsValid)

@@ -54,8 +54,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_apellido1", p.Apellido1);
             parameters.Add("p_estado", p.Estado);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_propietario", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_propietario", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarPropietarioAsync(int id)
@@ -63,8 +63,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id_propietario", id);
             
-            int rows = await _db.ExecuteAsync("sp_eliminar_propietario", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_propietario", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
     }
 }

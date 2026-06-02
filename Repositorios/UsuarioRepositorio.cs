@@ -70,8 +70,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_id_propietario", u.IdPropietario);
             parameters.Add("p_id_veterinario", u.IdVeterinario);
 
-            int rows = await _db.ExecuteAsync("sp_insertar_usuario", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_insertar_usuario", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> ActualizarUsuarioAsync(UsuarioDTO u)
@@ -96,8 +96,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_contrasena_hash", passHash);
             parameters.Add("p_id_rol", u.IdRol);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_usuario", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_usuario", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarUsuarioAsync(int id)
@@ -105,8 +105,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id", id);
 
-            int rows = await _db.ExecuteAsync("sp_eliminar_usuario", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_usuario", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<UsuarioDTO?> ValidarUsuarioAsync(string username, string password)

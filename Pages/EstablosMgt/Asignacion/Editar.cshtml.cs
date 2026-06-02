@@ -62,7 +62,20 @@ namespace HipodromoNacional.Pages.EstablosMgt.Asignacion
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error al actualizar: {ex.Message}";
+                string message = ex.Message;
+                if (message.Contains("uq_asignacion_caballo_activa") || message.Contains("23505"))
+                {
+                    message = "El caballo ya cuenta con una asignación activa en otro establo.";
+                }
+                else if (message.Contains("capacidad") || message.Contains("tope") || message.Contains("cupo") || message.Contains("lleno"))
+                {
+                    message = "El establo seleccionado ya se encuentra lleno y no tiene capacidad disponible.";
+                }
+                else if (message.Contains("mantenimiento"))
+                {
+                    message = "No se puede asignar un caballo a un establo en mantenimiento.";
+                }
+                TempData["ErrorMessage"] = $"Error al actualizar asignación: {message}";
                 var establos = await _db.QueryAsync<EstabloDTO>("SELECT id_establo AS IdEstablo, codigo AS Codigo, ubicacion AS Ubicacion FROM establo ORDER BY codigo");
                 Establos = establos.ToList();
                 return Page();

@@ -27,10 +27,11 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_id_metodo_pago", idMetodoPago);
             parameters.Add("p_referencia", referencia);
             parameters.Add("p_numero_comprobante", numeroComprobante);
-            parameters.Add("p_new_id_factura", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            await _db.ExecuteAsync("sp_crear_factura", parameters, commandType: CommandType.StoredProcedure);
-            return parameters.Get<int>("p_new_id_factura");
+            return await _db.QueryFirstAsync<int>(
+                "CALL public.sp_crear_factura(@p_id_propietario, @p_id_evento, @p_id_metodo_pago, @p_referencia, @p_numero_comprobante, null);",
+                parameters
+            );
         }
 
         public async Task<FacturaDetalleDTO?> ObtenerFacturaDetalleAsync(int idFactura)

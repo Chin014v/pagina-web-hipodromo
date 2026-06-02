@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+@page "{id:int}"
 @model HipodromoNacional.Pages.Veterinaria.EditarModel
 @{
     ViewData["Title"] = "Editar Registro Veterinario";
@@ -17,12 +17,34 @@
         <form method="post" novalidate>
             <input type="hidden" asp-for="Historial.IdHistorial" data-val-number="Ingrese un número válido." />
 
-            <div class="mb-3">
-                <label class="form-label">Certificado Vigente</label>
-                <div class="form-check form-switch">
-                    <input asp-for="Historial.CertificadoVigente" class="form-check-input" />
-                    <label class="form-check-label">Marcar como vigente</label>
+            @if (Model.Historial.CertificadoVigente && Model.Historial.FechaVencimientoCertificado >= DateOnly.FromDateTime(DateTime.Today))
+            {
+                <div class="mb-3">
+                    <label class="form-label">Certificado Vigente</label>
+                    <div class="form-check form-switch">
+                        <input asp-for="Historial.CertificadoVigente" class="form-check-input" />
+                        <label class="form-check-label">Marcar como vigente</label>
+                    </div>
                 </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="Historial.CertificadoVigente" />
+                <div class="mb-3">
+                    <div class="alert alert-warning py-2 small">
+                        <i class="bi bi-info-circle-fill"></i> El certificado actual ha vencido o no está vigente. Se activará automáticamente si actualiza la fecha de vencimiento a una fecha futura.
+                    </div>
+                </div>
+            }
+
+            <div class="mb-3">
+                <label class="form-label">Estado de Salud del Caballo</label>
+                <select asp-for="EstadoSaludCaballo" class="form-select" required>
+                    <option value="Saludable">Saludable</option>
+                    <option value="EnTratamiento">En Tratamiento</option>
+                    <option value="NoApto">No Apto</option>
+                </select>
+                <span asp-validation-for="EstadoSaludCaballo" class="field-validation-error"></span>
             </div>
 
             <div class="mb-3">

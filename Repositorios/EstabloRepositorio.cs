@@ -45,8 +45,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_capacidad", e.Capacidad);
             parameters.Add("p_estado", e.Estado);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_establo", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_establo", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarEstabloAsync(int id)
@@ -54,8 +54,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id_establo", id);
             
-            int rows = await _db.ExecuteAsync("sp_eliminar_establo", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_establo", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
     }
 }

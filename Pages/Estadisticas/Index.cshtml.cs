@@ -20,19 +20,49 @@ namespace HipodromoNacional.Pages.Estadisticas
         public int TotalEventos { get; set; }
         public decimal TotalIngresos { get; set; }
 
-        // Rankings
-        public IEnumerable<dynamic> CaballosGanadores { get; set; } = new List<dynamic>();
-        public IEnumerable<dynamic> PropietariosInversion { get; set; } = new List<dynamic>();
-        public IEnumerable<dynamic> RazasFrecuentes { get; set; } = new List<dynamic>();
+        public class CaballoGanadorDTO
+        {
+            public string Caballo { get; set; } = string.Empty;
+            public string Propietario { get; set; } = string.Empty;
+            public int Victorias { get; set; }
+            public decimal TotalPremios { get; set; }
+        }
+
+        public class PropietarioInversionDTO
+        {
+            public string Propietario { get; set; } = string.Empty;
+            public string Cedula { get; set; } = string.Empty;
+            public int FacturasEmitidas { get; set; }
+            public decimal TotalFacturado { get; set; }
+        }
+
+        public class RazaFrecuenteDTO
+        {
+            public string Raza { get; set; } = string.Empty;
+            public int Cantidad { get; set; }
+        }
+
+        // Rankings fuertemente tipados
+        public IEnumerable<CaballoGanadorDTO> CaballosGanadores { get; set; } = new List<CaballoGanadorDTO>();
+        public IEnumerable<PropietarioInversionDTO> PropietariosInversion { get; set; } = new List<PropietarioInversionDTO>();
+        public IEnumerable<RazaFrecuenteDTO> RazasFrecuentes { get; set; } = new List<RazaFrecuenteDTO>();
 
         public async Task OnGetAsync()
         {
             TotalCaballos = await _db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM caballo");
             TotalPropietarios = await _db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM propietario");
             TotalEventos = await _db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM evento");
-            TotalIngresos = await _db.ExecuteScalarAsync<decimal>("SELECT COALESCE(SUM(total), 0) FROM factura WHERE id_estado_pago = 2");
+            
+            try
+            {
+                TotalIngresos = await _db.ExecuteScalarAsync<decimal>("SELECT COALESCE(SUM(total), 0) FROM factura WHERE id_estado_pago = 2");
+            }
+            catch
+            {
+                TotalIngresos = 0;
+            }
 
-            CaballosGanadores = await _db.QueryAsync(@"
+            CaballosGanadores = await _db.QueryAsync<CaballoGanadorDTO>(@"
                 SELECT c.nombre AS Caballo, p.nombre || ' ' || p.apellido1 AS Propietario, COUNT(rc.id_resultado) AS Victorias, SUM(rc.premio_obtenido) AS TotalPremios
                 FROM resultado_carrera rc
                 JOIN inscripcion i ON rc.id_inscripcion = i.id_inscripcion
@@ -43,7 +73,7 @@ namespace HipodromoNacional.Pages.Estadisticas
                 ORDER BY Victorias DESC, TotalPremios DESC
                 LIMIT 5");
 
-            PropietariosInversion = await _db.QueryAsync(@"
+            PropietariosInversion = await _db.QueryAsync<PropietarioInversionDTO>(@"
                 SELECT p.nombre || ' ' || p.apellido1 AS Propietario, p.cedula AS Cedula, COUNT(f.id_factura) AS FacturasEmitidas, SUM(f.total) AS TotalFacturado
                 FROM factura f
                 JOIN propietario p ON f.id_propietario = p.id_propietario
@@ -51,7 +81,7 @@ namespace HipodromoNacional.Pages.Estadisticas
                 ORDER BY TotalFacturado DESC
                 LIMIT 5");
 
-            RazasFrecuentes = await _db.QueryAsync(@"
+            RazasFrecuentes = await _db.QueryAsync<RazaFrecuenteDTO>(@"
                 SELECT r.nombre_raza AS Raza, COUNT(c.id_caballo) AS Cantidad
                 FROM caballo c
                 JOIN raza r ON c.id_raza = r.id_raza

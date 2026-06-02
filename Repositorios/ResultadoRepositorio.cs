@@ -65,8 +65,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_premio_obtenido", dto.PremioObtenido);
             parameters.Add("p_observaciones", dto.Observaciones);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_resultado_carrera", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_resultado_carrera", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarResultadoAsync(int id)
@@ -74,8 +74,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id", id);
 
-            int rows = await _db.ExecuteAsync("sp_eliminar_resultado_carrera", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_resultado_carrera", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> CalcularPremiosEventoAsync(int idEvento)

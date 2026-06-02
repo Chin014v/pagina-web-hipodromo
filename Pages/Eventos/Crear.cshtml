@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Fecha y Hora</label>
-                    <input asp-for="Evento.Fecha" type="datetime-local" class="form-control" step="any" required data-val-date="Ingrese una fecha válida." />
+                    <input asp-for="Evento.Fecha" type="datetime-local" class="form-control" step="60" required data-val-date="Ingrese una fecha válida." />
                     <span asp-validation-for="Evento.Fecha" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-6 mb-3">

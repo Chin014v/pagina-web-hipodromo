@@ -24,7 +24,7 @@ namespace HipodromoNacional.Pages.EstablosMgt.Asignacion
         public List<CaballoDTO> Caballos { get; set; } = new();
         public List<EstabloDTO> Establos { get; set; } = new();
 
-        public async Task OnGetAsync()
+        private async Task CargarListasAsync()
         {
             var caballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, nombre AS Nombre FROM caballo ORDER BY nombre");
             Caballos = caballos.ToList();
@@ -33,9 +33,18 @@ namespace HipodromoNacional.Pages.EstablosMgt.Asignacion
             Establos = establos.ToList();
         }
 
+        public async Task OnGetAsync()
+        {
+            await CargarListasAsync();
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                await CargarListasAsync();
+                return Page();
+            }
 
             try
             {
@@ -45,7 +54,21 @@ namespace HipodromoNacional.Pages.EstablosMgt.Asignacion
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error al guardar: {ex.Message}";
+                string message = ex.Message;
+                if (message.Contains("uq_asignacion_caballo_activa") || message.Contains("23505"))
+                {
+                    message = "El caballo ya cuenta con una asignación activa en otro establo.";
+                }
+                else if (message.Contains("capacidad") || message.Contains("tope") || message.Contains("cupo") || message.Contains("lleno"))
+                {
+                    message = "El establo seleccionado ya se encuentra lleno y no tiene capacidad disponible.";
+                }
+                else if (message.Contains("mantenimiento"))
+                {
+                    message = "No se puede asignar un caballo a un establo en mantenimiento.";
+                }
+                TempData["ErrorMessage"] = $"Error al asignar establo: {message}";
+                await CargarListasAsync();
                 return Page();
             }
         }

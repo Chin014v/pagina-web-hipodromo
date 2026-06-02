@@ -47,12 +47,28 @@ namespace HipodromoNacional.Pages.Caballos
             var razasQuery = await _db.QueryAsync<dynamic>("SELECT id_raza AS id, nombre_raza AS nombre FROM raza WHERE estado = 'Activo' ORDER BY nombre_raza");
             Razas = razasQuery.ToList();
 
-            var propQuery = await _db.QueryAsync<dynamic>("SELECT id_propietario AS id, cedula || ' - ' || nombre || ' ' || apellido1 AS nombre_completo FROM propietario WHERE estado = 'Activo' ORDER BY nombre, apellido1");
-            Propietarios = propQuery.ToList();
+            var propClaim = User.FindFirst("PropietarioId");
+            if (propClaim != null && int.TryParse(propClaim.Value, out int propId))
+            {
+                var propQuery = await _db.QueryAsync<dynamic>("SELECT id_propietario AS id, cedula || ' - ' || nombre || ' ' || apellido1 AS nombre_completo FROM propietario WHERE id_propietario = @id AND estado = 'Activo'", new { id = propId });
+                Propietarios = propQuery.ToList();
+                Caballo.IdPropietario = propId;
+            }
+            else
+            {
+                var propQuery = await _db.QueryAsync<dynamic>("SELECT id_propietario AS id, cedula || ' - ' || nombre || ' ' || apellido1 AS nombre_completo FROM propietario WHERE estado = 'Activo' ORDER BY nombre, apellido1");
+                Propietarios = propQuery.ToList();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var propClaim = User.FindFirst("PropietarioId");
+            if (propClaim != null && int.TryParse(propClaim.Value, out int propId))
+            {
+                Caballo.IdPropietario = propId;
+            }
+
             if (!ModelState.IsValid)
             {
                 await CargarListasAsync();

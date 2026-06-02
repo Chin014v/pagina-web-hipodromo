@@ -52,8 +52,9 @@ namespace HipodromoNacional.Pages.Facturacion
                 Propietarios = await _propietarioRepo.ObtenerTodosAsync();
                 Eventos = await _eventoRepo.ObtenerTodosAsync();
 
-                if (TempData["MostrarFacturaId"] is int idFactura)
+                if (TempData["MostrarFacturaId"] != null)
                 {
+                    int idFactura = Convert.ToInt32(TempData["MostrarFacturaId"]);
                     FacturaRecienCreada = await _facturacionRepo.ObtenerFacturaDetalleAsync(idFactura);
                 }
             }

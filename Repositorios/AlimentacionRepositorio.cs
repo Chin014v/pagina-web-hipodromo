@@ -64,8 +64,8 @@ namespace HipodromoNacional.Repositorios
             parameters.Add("p_observaciones", dto.Observaciones);
             parameters.Add("p_fecha", dto.Fecha.ToDateTime(TimeOnly.MinValue), DbType.Date);
 
-            int rows = await _db.ExecuteAsync("sp_actualizar_alimentacion", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_actualizar_alimentacion", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
 
         public async Task<bool> EliminarAlimentacionAsync(int id)
@@ -73,8 +73,8 @@ namespace HipodromoNacional.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("p_id", id);
 
-            int rows = await _db.ExecuteAsync("sp_eliminar_alimentacion", parameters, commandType: CommandType.StoredProcedure);
-            return rows > 0;
+            await _db.ExecuteAsync("sp_eliminar_alimentacion", parameters, commandType: CommandType.StoredProcedure);
+            return true;
         }
     }
 }
