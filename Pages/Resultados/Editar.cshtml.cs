@@ -35,7 +35,12 @@ namespace HipodromoNacional.Pages.Resultados
 
             try
             {
-                await _repo.ActualizarResultadoAsync(Resultado);
+                bool success = await _repo.ActualizarResultadoAsync(Resultado);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró el resultado o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Resultado actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }

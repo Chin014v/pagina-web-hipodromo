@@ -28,9 +28,21 @@ namespace HipodromoNacional.Pages.Caballos
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Caballo.CodigoUnico");
+            ModelState.Remove("Caballo.Sexo");
+            ModelState.Remove("Caballo.IdRaza");
+            ModelState.Remove("Caballo.IdPropietario");
+
+            if (!ModelState.IsValid) return Page();
+
             try
             {
-                await _repo.ActualizarCaballoAsync(Caballo);
+                bool success = await _repo.ActualizarCaballoAsync(Caballo);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró el caballo especificado o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Caballo actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }

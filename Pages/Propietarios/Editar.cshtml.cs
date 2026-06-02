@@ -39,7 +39,12 @@ namespace HipodromoNacional.Pages.Propietarios
 
             try
             {
-                await _repo.ActualizarPropietarioAsync(Propietario);
+                bool success = await _repo.ActualizarPropietarioAsync(Propietario);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró el propietario especificado o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Propietario actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }

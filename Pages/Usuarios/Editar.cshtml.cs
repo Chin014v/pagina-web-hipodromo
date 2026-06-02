@@ -47,7 +47,13 @@ namespace HipodromoNacional.Pages.Usuarios
 
             try
             {
-                await _repo.ActualizarUsuarioAsync(Usuario);
+                bool success = await _repo.ActualizarUsuarioAsync(Usuario);
+                if (!success)
+                {
+                    ModelState.AddModelError(string.Empty, "No se encontró el usuario o no hubo cambios.");
+                    Roles = await _repo.ObtenerRolesAsync();
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Usuario actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }

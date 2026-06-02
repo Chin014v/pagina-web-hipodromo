@@ -28,9 +28,20 @@ namespace HipodromoNacional.Pages.Inscripciones
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Inscripcion.CodigoInscripcion");
+            ModelState.Remove("Inscripcion.IdEvento");
+            ModelState.Remove("Inscripcion.IdCaballo");
+
+            if (!ModelState.IsValid) return Page();
+
             try
             {
-                await _repo.ActualizarInscripcionAsync(Inscripcion);
+                bool success = await _repo.ActualizarInscripcionAsync(Inscripcion);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró la inscripción especificada o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Inscripción actualizada exitosamente.";
                 return RedirectToPage("./Index");
             }

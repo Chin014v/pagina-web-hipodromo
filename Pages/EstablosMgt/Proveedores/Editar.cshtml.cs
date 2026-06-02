@@ -28,9 +28,18 @@ namespace HipodromoNacional.Pages.EstablosMgt.Proveedores
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Proveedor.Nombre");
+
+            if (!ModelState.IsValid) return Page();
+
             try
             {
-                await _repo.ActualizarProveedorAsync(Proveedor);
+                bool success = await _repo.ActualizarProveedorAsync(Proveedor);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró el proveedor especificado o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Proveedor actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }

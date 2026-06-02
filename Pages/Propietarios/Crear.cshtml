@@ -23,7 +23,7 @@
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label class="form-label">Cédula</label>
-                    <input asp-for="Propietario.Cedula" class="form-control" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                    <input asp-for="Propietario.Cedula" class="form-control" required oninput="this.value = this.value.replace(/[^0-9\-]/g, '')" />
                     <span asp-validation-for="Propietario.Cedula" class="field-validation-error"></span>
                 </div>
                 <div class="col-md-3">

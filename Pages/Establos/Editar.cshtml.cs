@@ -28,9 +28,18 @@ namespace HipodromoNacional.Pages.Establos
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Establo.Codigo");
+
+            if (!ModelState.IsValid) return Page();
+
             try
             {
-                await _repo.ActualizarEstabloAsync(Establo);
+                bool success = await _repo.ActualizarEstabloAsync(Establo);
+                if (!success)
+                {
+                    TempData["ErrorMessage"] = "No se encontró el establo especificado o no hubo cambios.";
+                    return Page();
+                }
                 TempData["SuccessMessage"] = "Establo actualizado exitosamente.";
                 return RedirectToPage("./Index");
             }
