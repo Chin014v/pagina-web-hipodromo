@@ -14,10 +14,6 @@
             <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
         }
 
-        <div class="alert alert-info">
-            Según las reglas del proyecto (Punto 7), modificamos: <strong>Estado, Teléfono y Correo</strong>.
-        </div>
-
         <form method="post" novalidate>
             <input type="hidden" asp-for="Proveedor.IdProveedor" data-val-number="Ingrese un número válido." />
 
