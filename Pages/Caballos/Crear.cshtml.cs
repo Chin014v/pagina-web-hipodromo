@@ -65,10 +65,21 @@ namespace HipodromoNacional.Pages.Caballos
                 TempData["SuccessMessage"] = "Caballo registrado exitosamente.";
                 return RedirectToPage("./Index");
             }
+            catch (Npgsql.PostgresException ex)
+            {
+                string message = ex.MessageText;
+                if (ex.SqlState == "23505" || ex.ConstraintName == "caballo_codigo_unico_key" || message.Contains("caballo_codigo_unico_key") || message.Contains("23505"))
+                {
+                    message = "El código único del caballo ya se encuentra registrado.";
+                }
+                TempData["ErrorMessage"] = $"Error al guardar: {message}";
+                await CargarListasAsync();
+                return Page();
+            }
             catch (Exception ex)
             {
                 string message = ex.Message;
-                if (message.Contains("caballo_codigo_unico_key") || message.Contains("23505") || message.Contains("duplicate key"))
+                if (message.Contains("caballo_codigo_unico_key", StringComparison.OrdinalIgnoreCase) || message.Contains("23505") || message.Contains("duplicate key", StringComparison.OrdinalIgnoreCase))
                 {
                     message = "El código único del caballo ya se encuentra registrado.";
                 }

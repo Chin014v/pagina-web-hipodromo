@@ -705,6 +705,8 @@ CREATE PROCEDURE public.sp_calcular_premios_evento(IN p_id_evento integer)
     AS $$
 DECLARE
     v_premio_total NUMERIC(12,2);
+    r RECORD;
+    v_posicion INT := 1;
 BEGIN
     SELECT premio_total INTO v_premio_total
     FROM evento
@@ -714,11 +716,27 @@ BEGIN
         RAISE EXCEPTION 'El evento no existe.';
     END IF;
 
+    -- 1. Asignar posiciones basadas en tiempo (tiempo menor gana)
+    FOR r IN (
+        SELECT rc.id_resultado
+        FROM resultado_carrera rc
+        JOIN inscripcion i ON rc.id_inscripcion = i.id_inscripcion
+        WHERE i.id_evento = p_id_evento
+        ORDER BY rc.tiempo_registro ASC
+    ) LOOP
+        UPDATE resultado_carrera
+        SET posicion = v_posicion
+        WHERE id_resultado = r.id_resultado;
+        
+        v_posicion := v_posicion + 1;
+    END LOOP;
+
+    -- 2. Actualizar premios en base a la nueva posición recalculada
     UPDATE resultado_carrera rc
     SET premio_obtenido = CASE
-        WHEN rc.posicion = 1 THEN v_premio_total * 0.50
-        WHEN rc.posicion = 2 THEN v_premio_total * 0.30
-        WHEN rc.posicion = 3 THEN v_premio_total * 0.20
+        WHEN rc.posicion = 1 THEN ROUND(v_premio_total * 0.50, 2)
+        WHEN rc.posicion = 2 THEN ROUND(v_premio_total * 0.30, 2)
+        WHEN rc.posicion = 3 THEN ROUND(v_premio_total * 0.20, 2)
         ELSE 0
     END
     FROM inscripcion i

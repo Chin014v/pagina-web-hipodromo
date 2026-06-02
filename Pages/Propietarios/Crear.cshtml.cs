@@ -46,25 +46,25 @@ namespace HipodromoNacional.Pages.Propietarios
 
         public async Task<JsonResult> OnGetProvinciasAsync(int paisId)
         {
-            var list = await _db.QueryAsync<dynamic>("SELECT id_provincia AS id, nombre_provincia AS nombre FROM provincia WHERE id_pais = @PaisId ORDER BY nombre_provincia", new { PaisId = paisId });
+            var list = await _db.QueryAsync<dynamic>("SELECT id_provincia AS id, nombre_provincia AS nombre FROM provincia WHERE id_pais = @PaisId AND NULLIF(TRIM(BOTH FROM nombre_provincia), '') IS NOT NULL AND TRIM(BOTH FROM nombre_provincia) NOT IN ('Seleccione', 'Seleccione...', 'SELECCIONE') ORDER BY nombre_provincia", new { PaisId = paisId });
             return new JsonResult(list);
         }
 
         public async Task<JsonResult> OnGetCantonesAsync(int provinciaId)
         {
-            var list = await _db.QueryAsync<dynamic>("SELECT id_canton AS id, nombre_canton AS nombre FROM canton WHERE id_provincia = @ProvinciaId ORDER BY nombre_canton", new { ProvinciaId = provinciaId });
+            var list = await _db.QueryAsync<dynamic>("SELECT id_canton AS id, nombre_canton AS nombre FROM canton WHERE id_provincia = @ProvinciaId AND NULLIF(TRIM(BOTH FROM nombre_canton), '') IS NOT NULL AND TRIM(BOTH FROM nombre_canton) NOT IN ('Seleccione', 'Seleccione...', 'SELECCIONE') ORDER BY nombre_canton", new { ProvinciaId = provinciaId });
             return new JsonResult(list);
         }
 
         public async Task<JsonResult> OnGetDistritosAsync(int cantonId)
         {
-            var list = await _db.QueryAsync<dynamic>("SELECT id_distrito AS id, nombre_distrito AS nombre FROM distrito WHERE id_canton = @CantonId ORDER BY nombre_distrito", new { CantonId = cantonId });
+            var list = await _db.QueryAsync<dynamic>("SELECT id_distrito AS id, nombre_distrito AS nombre FROM distrito WHERE id_canton = @CantonId AND NULLIF(TRIM(BOTH FROM nombre_distrito), '') IS NOT NULL AND TRIM(BOTH FROM nombre_distrito) NOT IN ('Seleccione', 'Seleccione...', 'SELECCIONE') ORDER BY nombre_distrito", new { CantonId = cantonId });
             return new JsonResult(list);
         }
 
         public async Task<JsonResult> OnGetBarriosAsync(int distritoId)
         {
-            var list = await _db.QueryAsync<dynamic>("SELECT id_barrio AS id, nombre_barrio AS nombre FROM barrio WHERE id_distrito = @DistritoId ORDER BY nombre_barrio", new { DistritoId = distritoId });
+            var list = await _db.QueryAsync<dynamic>("SELECT id_barrio AS id, nombre_barrio AS nombre FROM barrio WHERE id_distrito = @DistritoId AND NULLIF(TRIM(BOTH FROM nombre_barrio), '') IS NOT NULL AND TRIM(BOTH FROM nombre_barrio) NOT IN ('Seleccione', 'Seleccione...', 'SELECCIONE') ORDER BY nombre_barrio", new { DistritoId = distritoId });
             return new JsonResult(list);
         }
 

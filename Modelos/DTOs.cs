@@ -207,6 +207,7 @@ namespace HipodromoNacional.Modelos
 
         public string? NombreCaballo { get; set; }
         public string? NombreEvento { get; set; }
+        public int IdEvento { get; set; }
     }
 
     public class HistorialVeterinarioDTO

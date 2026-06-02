@@ -20,10 +20,26 @@ namespace HipodromoNacional.Pages.Resultados
 
         public IEnumerable<ResultadoDTO> Resultados { get; set; } = new List<ResultadoDTO>();
         public List<EventoDTO> EventosFinalizados { get; set; } = new();
+        public List<EventoDTO> TodosEventos { get; set; } = new();
+
+        [BindProperty(SupportsGet = true)]
+        public int? FiltrarEventoId { get; set; }
 
         public async Task OnGetAsync()
         {
-            Resultados = await _repo.ObtenerTodosAsync();
+            var todos = await _repo.ObtenerTodosAsync();
+            var todosEvs = await _db.QueryAsync<EventoDTO>("SELECT id_evento AS IdEvento, nombre AS Nombre FROM evento ORDER BY nombre");
+            TodosEventos = todosEvs.ToList();
+
+            if (FiltrarEventoId.HasValue)
+            {
+                Resultados = todos.Where(r => r.IdEvento == FiltrarEventoId.Value).ToList();
+            }
+            else
+            {
+                Resultados = todos;
+            }
+
             var eventos = await _db.QueryAsync<EventoDTO>("SELECT id_evento AS IdEvento, nombre AS Nombre FROM evento WHERE estado = 'Finalizado' ORDER BY nombre");
             EventosFinalizados = eventos.ToList();
         }

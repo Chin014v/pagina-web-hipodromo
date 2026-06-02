@@ -46,10 +46,20 @@ namespace HipodromoNacional.Pages.Eventos
                 TempData["SuccessMessage"] = "Evento programado exitosamente.";
                 return RedirectToPage("./Index");
             }
+            catch (Npgsql.PostgresException ex)
+            {
+                string message = ex.MessageText;
+                if (ex.SqlState == "23505" || ex.ConstraintName == "evento_codigo_evento_key" || message.Contains("evento_codigo_evento_key") || message.Contains("23505"))
+                {
+                    message = "El código del evento ya se encuentra registrado.";
+                }
+                TempData["ErrorMessage"] = $"Error al guardar: {message}";
+                return Page();
+            }
             catch (Exception ex)
             {
                 string message = ex.Message;
-                if (message.Contains("evento_codigo_evento_key") || message.Contains("23505") || message.Contains("duplicate key"))
+                if (message.Contains("evento_codigo_evento_key", StringComparison.OrdinalIgnoreCase) || message.Contains("23505") || message.Contains("duplicate key", StringComparison.OrdinalIgnoreCase))
                 {
                     message = "El código del evento ya se encuentra registrado.";
                 }
