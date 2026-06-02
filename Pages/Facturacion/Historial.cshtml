@@ -47,8 +47,8 @@
                                     <td><strong>@item.CodigoFactura</strong></td>
                                     <td>@item.ClienteNombre</td>
                                     <td>@item.EventoNombre</td>
-                                    <td>@item.Subtotal.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
-                                    <td><strong>@item.Total.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</strong></td>
+                                    <td>₡@item.Subtotal.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                    <td><strong>₡@item.Total.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</strong></td>
                                     <td>
                                         <span class="badge @(item.EstadoPago == "Pagada" ? "bg-success" : (item.EstadoPago == "Pendiente" ? "bg-warning text-dark" : "bg-danger"))">@item.EstadoPago</span>
                                     </td>
