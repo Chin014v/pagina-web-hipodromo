@@ -20,7 +20,7 @@ namespace HipodromoNacional.Repositorios
                        r.posicion AS Posicion, r.tiempo_registro AS TiempoRegistro,
                        r.premio_obtenido AS PremioObtenido, r.observaciones AS Observaciones,
                        r.fecha_registro AS FechaRegistro,
-                       c.nombre AS NombreCaballo, e.nombre AS NombreEvento
+                       c.nombre AS NombreCaballo, e.nombre AS NombreEvento, e.id_evento AS IdEvento
                 FROM resultado_carrera r
                 JOIN inscripcion i ON r.id_inscripcion = i.id_inscripcion
                 JOIN caballo c ON i.id_caballo = c.id_caballo
@@ -35,7 +35,7 @@ namespace HipodromoNacional.Repositorios
                        r.posicion AS Posicion, r.tiempo_registro AS TiempoRegistro,
                        r.premio_obtenido AS PremioObtenido, r.observaciones AS Observaciones,
                        r.fecha_registro AS FechaRegistro,
-                       c.nombre AS NombreCaballo, e.nombre AS NombreEvento
+                       c.nombre AS NombreCaballo, e.nombre AS NombreEvento, e.id_evento AS IdEvento
                 FROM resultado_carrera r
                 JOIN inscripcion i ON r.id_inscripcion = i.id_inscripcion
                 JOIN caballo c ON i.id_caballo = c.id_caballo

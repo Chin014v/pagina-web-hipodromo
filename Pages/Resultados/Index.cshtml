@@ -49,6 +49,38 @@
     </div>
 </div>
 
+<div class="card mb-4 bg-light">
+    <div class="card-body py-3">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label class="form-label mb-0 fw-bold"><i class="bi bi-filter"></i> Filtrar por Evento:</label>
+            </div>
+            <div class="col-md-5">
+                <select name="FiltrarEventoId" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Todos los Eventos --</option>
+                    @foreach (var ev in Model.TodosEventos)
+                    {
+                        if (ev.IdEvento == Model.FiltrarEventoId)
+                        {
+                            <option value="@ev.IdEvento" selected>@ev.Nombre</option>
+                        }
+                        else
+                        {
+                            <option value="@ev.IdEvento">@ev.Nombre</option>
+                        }
+                    }
+                </select>
+            </div>
+            @if (Model.FiltrarEventoId.HasValue)
+            {
+                <div class="col-auto">
+                    <a asp-page="./Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-circle"></i> Limpiar Filtro</a>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table table-striped table-hover align-middle">
         <thead class="table-dark">

@@ -51,9 +51,25 @@ namespace HipodromoNacional.Pages.Usuarios
                 TempData["SuccessMessage"] = "Usuario creado exitosamente.";
                 return RedirectToPage("./Index");
             }
+            catch (Npgsql.PostgresException ex)
+            {
+                string message = ex.MessageText;
+                if (ex.SqlState == "23505" || ex.ConstraintName == "usuario_nombre_key" || message.Contains("usuario_nombre_key") || message.Contains("23505"))
+                {
+                    message = "El nombre de usuario ya se encuentra registrado.";
+                }
+                ModelState.AddModelError(string.Empty, $"Error al registrar usuario: {message}");
+                await CargarListasAsync();
+                return Page();
+            }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Error al registrar usuario: {ex.Message}");
+                string message = ex.Message;
+                if (message.Contains("usuario_nombre_key", StringComparison.OrdinalIgnoreCase) || message.Contains("23505") || message.Contains("duplicate key", StringComparison.OrdinalIgnoreCase))
+                {
+                    message = "El nombre de usuario ya se encuentra registrado.";
+                }
+                ModelState.AddModelError(string.Empty, $"Error al registrar usuario: {message}");
                 await CargarListasAsync();
                 return Page();
             }
