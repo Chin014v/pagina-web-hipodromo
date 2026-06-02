@@ -55,8 +55,8 @@
                                         <tr>
                                             <td>@line.Descripcion</td>
                                             <td class="text-center">@line.Cantidad.ToString("0.00")</td>
-                                            <td class="text-end">@line.PrecioUnitario.ToString("C")</td>
-                                            <td class="text-end">@line.SubtotalLinea.ToString("C")</td>
+                                            <td class="text-end">₡@line.PrecioUnitario.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
+                                            <td class="text-end">₡@line.SubtotalLinea.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -69,30 +69,30 @@
                                 <table class="table table-sm table-borderless">
                                     <tr>
                                         <th>Subtotal bruto:</th>
-                                        <td class="text-end">@Model.Factura.Subtotal.ToString("C")</td>
+                                        <td class="text-end">₡@Model.Factura.Subtotal.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
                                     </tr>
                                     @if (Model.Factura.PorcentajeDescuento > 0)
                                     {
                                         <tr class="text-success">
                                             <th>Descuento (@Model.Factura.PorcentajeDescuento.ToString("0.00")%):</th>
-                                            <td class="text-end">- @Model.Factura.MontoDescuento.ToString("C")</td>
+                                            <td class="text-end">- ₡@Model.Factura.MontoDescuento.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
                                         </tr>
                                     }
                                     <tr>
                                         <th>Base Imponible:</th>
-                                        <td class="text-end border-top">@Model.Factura.BaseImponible.ToString("C")</td>
+                                        <td class="text-end border-top">₡@Model.Factura.BaseImponible.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
                                     </tr>
                                     <tr>
                                         <th>IVA (13%):</th>
-                                        <td class="text-end">@Model.Factura.ImpuestoIva.ToString("C")</td>
+                                        <td class="text-end">₡@Model.Factura.ImpuestoIva.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
                                     </tr>
                                     <tr>
                                         <th>Comisión Administrativa (5%):</th>
-                                        <td class="text-end">@Model.Factura.ComisionAdmin.ToString("C")</td>
+                                        <td class="text-end">₡@Model.Factura.ComisionAdmin.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
                                     </tr>
                                     <tr class="fs-5 border-top border-dark">
                                         <th>TOTAL FACTURA:</th>
-                                        <td class="text-end"><strong>@Model.Factura.Total.ToString("C")</strong></td>
+                                        <td class="text-end"><strong>₡@Model.Factura.Total.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</strong></td>
                                     </tr>
                                 </table>
                             </div>
@@ -135,7 +135,7 @@
                         else
                         {
                             <div class="alert alert-warning text-center mb-0" role="alert">
-                                <i class="bi bi-clock-history fs-4 d-block mb-2"></i> Esta factura se encuentra **pendiente de pago**.
+                                <i class="bi bi-clock-history fs-4 d-block mb-2"></i> Esta factura se encuentra <strong>pendiente de pago</strong>.
                             </div>
                         }
                     </div>
