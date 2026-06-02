@@ -123,7 +123,7 @@ namespace HipodromoNacional.Repositorios
                     u.activo AS Activo
                 FROM usuario u
                 JOIN rol r ON u.id_rol = r.id_rol
-                WHERE LOWER(u.nombre) = LOWER(@Username) AND u.contrasena_hash = @Hash AND u.activo = TRUE";
+                WHERE LOWER(u.nombre) = LOWER(CAST(@Username AS VARCHAR)) AND u.contrasena_hash = @Hash AND u.activo = TRUE";
 
             return await _db.QueryFirstOrDefaultAsync<UsuarioDTO>(sql, new { Username = username, Hash = hash });
         }

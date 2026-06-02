@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using HipodromoNacional.Modelos;
 using HipodromoNacional.Repositorios;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HipodromoNacional.Pages.Inscripciones
 {
+    [Authorize(Roles = "Administrador")]
     public class EditarModel : PageModel
     {
         private readonly IInscripcionRepositorio _repo;

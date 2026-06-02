@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HipodromoNacional.Pages.Inscripciones
 {
-    [Authorize(Roles = "Administrador,Propietario")]
+    [Authorize(Roles = "Propietario")]
     public class CrearModel : PageModel
     {
         private readonly IInscripcionRepositorio _repo;

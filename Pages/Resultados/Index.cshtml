@@ -110,7 +110,7 @@
                     <td>@item.NombreEvento</td>
                     <td><span class="badge bg-dark fs-6">@item.Posicion</span></td>
                     <td>@item.TiempoRegistro.ToString("HH:mm:ss.ff")</td>
-                    <td>@item.PremioObtenido.ToString("N2")</td>
+                    <td>₡@item.PremioObtenido.ToString("N2", new System.Globalization.CultureInfo("es-CR"))</td>
                     @if (User.IsInRole("Administrador"))
                     {
                         <td>

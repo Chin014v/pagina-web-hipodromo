@@ -17,7 +17,7 @@
         <a asp-page="/Index" class="btn btn-outline-secondary me-3"><i class="bi bi-arrow-left"></i> Regresar</a>
         <h2 class="mb-0"><i class="bi bi-pencil-square"></i> Inscripciones a Carreras</h2>
     </div>
-    @if (User.IsInRole("Administrador") || User.IsInRole("Propietario"))
+    @if (User.IsInRole("Propietario"))
     {
         <a asp-page="./Crear" class="btn btn-success"><i class="bi bi-plus-circle"></i> Nueva Inscripción</a>
     }

@@ -6,6 +6,7 @@ using HipodromoNacional.Repositorios;
 using Microsoft.AspNetCore.DataProtection;
 
 SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
+SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOrVet", policy => policy.RequireRole("Administrador", "Veterinario"));
     options.AddPolicy("AdminOrEstablo", policy => policy.RequireRole("Administrador", "EncargadoEstablo"));
     options.AddPolicy("AdminOrProp", policy => policy.RequireRole("Administrador", "Propietario"));
+    options.AddPolicy("PropietarioOnly", policy => policy.RequireRole("Propietario"));
+    options.AddPolicy("EstabloOnly", policy => policy.RequireRole("EncargadoEstablo"));
     options.AddPolicy("CaballosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
     options.AddPolicy("EventosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
     options.AddPolicy("ResultadosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
@@ -41,6 +44,9 @@ builder.Services.AddRazorPages(options =>
     
     options.Conventions.AuthorizeFolder("/EstablosMgt", "AdminOrEstablo");
     options.Conventions.AuthorizeFolder("/EstablosMgt/Beneficios", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Asignacion/Crear", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Asignacion/Editar", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Asignacion/Eliminar", "EstabloOnly");
     
     options.Conventions.AuthorizeFolder("/Establos", "AdminOrEstablo");
     options.Conventions.AuthorizePage("/Establos/Crear", "AdministradorOnly");
@@ -62,9 +68,9 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Resultados/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Resultados/Eliminar", "AdministradorOnly");
 
-    options.Conventions.AuthorizeFolder("/Inscripciones", "AdminOrProp");
-    options.Conventions.AuthorizePage("/Inscripciones/Crear", "AdminOrProp");
-    options.Conventions.AuthorizePage("/Inscripciones/Editar", "AdminOrProp");
+    options.Conventions.AuthorizeFolder("/Inscripciones");
+    options.Conventions.AuthorizePage("/Inscripciones/Crear", "PropietarioOnly");
+    options.Conventions.AuthorizePage("/Inscripciones/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Inscripciones/Eliminar", "AdministradorOnly");
     
     options.Conventions.AuthorizePage("/Facturacion/EmitirFactura", "AdministradorOnly");
@@ -155,6 +161,24 @@ public class TimeOnlyTypeHandler : SqlMapper.TypeHandler<TimeOnly>
         TimeSpan ts => TimeOnly.FromTimeSpan(ts),
         DateTime dt => TimeOnly.FromDateTime(dt),
         _ => TimeOnly.Parse(value.ToString()!)
+    };
+}
+
+// Dapper TypeHandler para DateOnly -> date en PostgreSQL
+public class DateOnlyTypeHandler : SqlMapper.TypeHandler<DateOnly>
+{
+    public override void SetValue(IDbDataParameter parameter, DateOnly value)
+    {
+        parameter.Value = value;
+        if (parameter is NpgsqlParameter npgsqlParam)
+            npgsqlParam.NpgsqlDbType = NpgsqlDbType.Date;
+    }
+
+    public override DateOnly Parse(object value) => value switch
+    {
+        DateOnly d => d,
+        DateTime dt => DateOnly.FromDateTime(dt),
+        _ => DateOnly.Parse(value.ToString()!)
     };
 }
 
