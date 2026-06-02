@@ -66,7 +66,8 @@ builder.Services.AddRazorPages(options =>
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 builder.Services.AddScoped<IDbConnection>(sp =>
 {
-    var username = "admin"; // Usuario por defecto para bitácoras al desactivar login
+    var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+    var username = httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "admin";
     var connBuilder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString)
     {
         ApplicationName = username
