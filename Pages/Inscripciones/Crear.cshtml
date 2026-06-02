@@ -48,16 +48,23 @@
                     <input asp-for="Inscripcion.FechaInscripcion" type="date" class="form-control" required />
                     <span asp-validation-for="Inscripcion.FechaInscripcion" class="field-validation-error"></span>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Estado</label>
-                    <select asp-for="Inscripcion.Estado" class="form-select" required>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Aprobada">Aprobada</option>
-                        <option value="Rechazada">Rechazada</option>
-                        <option value="Cancelada">Cancelada</option>
-                    </select>
-                    <span asp-validation-for="Inscripcion.Estado" class="field-validation-error"></span>
-                </div>
+                @if (User.IsInRole("Propietario"))
+                {
+                    <input type="hidden" asp-for="Inscripcion.Estado" value="Pendiente" />
+                }
+                else
+                {
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Estado</label>
+                        <select asp-for="Inscripcion.Estado" class="form-select" required>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Aprobada">Aprobada</option>
+                            <option value="Rechazada">Rechazada</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                        <span asp-validation-for="Inscripcion.Estado" class="field-validation-error"></span>
+                    </div>
+                }
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Observaciones</label>
                     <textarea asp-for="Inscripcion.Observaciones" class="form-control" rows="3"></textarea>

@@ -42,7 +42,7 @@
                                 <a class="nav-link" asp-area="" asp-page="/Eventos/Index"><i class="bi bi-calendar-event"></i> Eventos</a>
                             </li>
                         }
-                        @if (User.IsInRole("Administrador") || User.IsInRole("Encargado de Establo"))
+                        @if (User.IsInRole("Administrador") || User.IsInRole("EncargadoEstablo"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-page="/Establos/Index"><i class="bi bi-house-door-fill"></i> Establos</a>
@@ -83,7 +83,7 @@
                                     {
                                         <li><a class="dropdown-item" asp-page="/Veterinaria/Index"><i class="bi bi-heart-pulse me-2 text-danger"></i> Historial Veterinario</a></li>
                                     }
-                                    @if (User.IsInRole("Administrador") || User.IsInRole("Encargado de Establo"))
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("EncargadoEstablo"))
                                     {
                                         <li><a class="dropdown-item" asp-page="/EstablosMgt/Index"><i class="bi bi-box-seam me-2 text-info"></i> Suministros y Alimentación</a></li>
                                     }
@@ -118,11 +118,11 @@
                                             "Administrador" => "bg-warning text-dark",
                                             "Veterinario" => "bg-danger text-white",
                                             "Propietario" => "bg-success text-white",
-                                            "Encargado de Establo" => "bg-info text-white",
+                                            "EncargadoEstablo" => "bg-info text-white",
                                             _ => "bg-secondary text-white"
                                         };
                                     }
-                                    <span class="badge @badgeClass ms-1">@userRole</span>
+                                    <span class="badge @badgeClass ms-1">@(userRole == "EncargadoEstablo" ? "Encargado de Establo" : userRole)</span>
                                 </span>
                             </li>
                             <li class="nav-item">

@@ -21,11 +21,11 @@
                             "Administrador" => "bg-warning text-dark",
                             "Veterinario" => "bg-danger text-white",
                             "Propietario" => "bg-success text-white",
-                            "Encargado de Establo" => "bg-info text-white",
+                            "EncargadoEstablo" => "bg-info text-white",
                             _ => "bg-secondary text-white"
                         };
                     }
-                    <span class="badge @modeClass px-3 py-2 fs-6 shadow-sm"><i class="bi bi-shield-check me-1"></i> Modo @userRole</span>
+                    <span class="badge @modeClass px-3 py-2 fs-6 shadow-sm"><i class="bi bi-shield-check me-1"></i> Modo @(userRole == "EncargadoEstablo" ? "Encargado de Establo" : userRole)</span>
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
                     </div>
                 </div>
 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Encargado de Establo"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("EncargadoEstablo"))
                 {
                     <div class="col-md-6 mb-3">
                         <div class="card h-100 dashboard-module-card">
@@ -218,7 +218,7 @@
                     </div>
                 }
 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Encargado de Establo"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("EncargadoEstablo"))
                 {
                     <div class="col-md-6 mb-3">
                         <div class="card h-100 dashboard-module-card">

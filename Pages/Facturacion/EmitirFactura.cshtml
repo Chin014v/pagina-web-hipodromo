@@ -362,7 +362,7 @@
                         });
                         ddlEvento.disabled = false;
                     } else {
-                        ddlEvento.innerHTML = '<option value="">Este propietario no tiene inscripciones pendientes en ningún evento.</option>';
+                        ddlEvento.innerHTML = '<option value="">Este propietario no tiene inscripciones aprobadas pendientes de facturación. Primero apruebe la inscripción en Inscripciones > Editar.</option>';
                     }
                 } catch (err) {
                     console.error("Error al cargar eventos pendientes:", err);

@@ -33,13 +33,57 @@
 
                         <div class="mb-3">
                             <label class="form-label" asp-for="Usuario.IdRol">Rol del Usuario</label>
-                            <select class="form-select" asp-for="Usuario.IdRol">
-                                @foreach (var r in Model.Roles)
+                            <select class="form-select" asp-for="Usuario.IdRol" id="rolSelect">
+                                @foreach (var r in Model.Roles
+                                    .Where(r => r.NombreRol == "Administrador" || r.NombreRol == "Propietario" || r.NombreRol == "Veterinario" || r.NombreRol == "EncargadoEstablo"))
                                 {
-                                    <option value="@r.IdRol">@r.NombreRol (@r.Descripcion)</option>
+                                    var group = r.NombreRol switch
+                                    {
+                                        "Propietario" => "propietario",
+                                        "Veterinario" => "veterinario",
+                                        "EncargadoEstablo" => "encargado",
+                                        _ => ""
+                                    };
+                                    <option value="@r.IdRol" data-role-group="@group">@(r.NombreRol == "EncargadoEstablo" ? "Encargado de Establo" : r.NombreRol) (@r.Descripcion)</option>
                                 }
                             </select>
+
                             <span class="text-danger" asp-validation-for="Usuario.IdRol"></span>
+                        </div>
+
+                        <div class="mb-3 d-none" id="propietarioField">
+                            <label class="form-label" asp-for="Usuario.IdPropietario">Propietario Vinculado</label>
+                            <select class="form-select" asp-for="Usuario.IdPropietario">
+                                <option value="">-- Seleccione Propietario --</option>
+                                @foreach (var p in Model.Propietarios)
+                                {
+                                    <option value="@p.Id">@p.Nombre</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="Usuario.IdPropietario"></span>
+                        </div>
+
+                        <div class="mb-3 d-none" id="veterinarioField">
+                            <label class="form-label" asp-for="Usuario.IdVeterinario">Veterinario Vinculado</label>
+                            <select class="form-select" asp-for="Usuario.IdVeterinario">
+                                <option value="">-- Seleccione Veterinario --</option>
+                                @foreach (var v in Model.Veterinarios)
+                                {
+                                    <option value="@v.Id">@v.Nombre</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="Usuario.IdVeterinario"></span>
+                        </div>
+
+                        <div class="mb-3 d-none" id="encargadoField">
+                            <label class="form-label">Encargado de Establo Vinculado</label>
+                            <select class="form-select" asp-for="Usuario.IdEncargadoEstablo">
+                                <option value="">-- Seleccione Encargado --</option>
+                                @foreach (var e in Model.Encargados)
+                                {
+                                    <option value="@e.Id">@e.Nombre</option>
+                                }
+                            </select>
                         </div>
 
                         <div class="mb-3">
@@ -64,4 +108,21 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            function toggleFields() {
+                var selectedOpt = $("#rolSelect").find(":selected");
+                var group = selectedOpt.data("role-group") || "";
+
+                $("#propietarioField, #veterinarioField, #encargadoField").addClass("d-none");
+
+                if (group) {
+                    $("#" + group + "Field").removeClass("d-none");
+                }
+            }
+
+            $("#rolSelect").change(toggleFields);
+            toggleFields();
+        });
+    </script>
 }

@@ -468,7 +468,16 @@ namespace HipodromoNacional.Modelos
         public int? IdVeterinario { get; set; }
         public string? NombreVeterinario { get; set; }
 
+        public int? IdEncargadoEstablo { get; set; }
+        public string? NombreEncargado { get; set; }
+
         public bool Activo { get; set; } = true;
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
+    }
+
+    public class PersonaLookupDTO
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
     }
 }

@@ -51,7 +51,7 @@
                                         <strong>@item.Nombre</strong>
                                     </td>
                                     <td>
-                                        <span class="badge bg-info text-dark">@item.NombreRol</span>
+                                        <span class="badge bg-info text-dark">@(item.NombreRol == "EncargadoEstablo" ? "Encargado de Establo" : item.NombreRol)</span>
                                     </td>
                                     <td>
                                         @if (item.IdPropietario.HasValue)

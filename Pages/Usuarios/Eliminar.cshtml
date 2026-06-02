@@ -25,7 +25,7 @@
                             </tr>
                             <tr>
                                 <th>Rol:</th>
-                                <td><span class="badge bg-info text-dark">@Model.Usuario.NombreRol</span></td>
+                                <td><span class="badge bg-info text-dark">@(Model.Usuario.NombreRol == "EncargadoEstablo" ? "Encargado de Establo" : Model.Usuario.NombreRol)</span></td>
                             </tr>
                             <tr>
                                 <th>Vinculado A:</th>

@@ -24,8 +24,9 @@ namespace HipodromoNacional.Pages.Usuarios
         public UsuarioDTO Usuario { get; set; } = new();
 
         public IEnumerable<RolDTO> Roles { get; set; } = new List<RolDTO>();
-        public IEnumerable<dynamic> Propietarios { get; set; } = new List<dynamic>();
-        public IEnumerable<dynamic> Veterinarios { get; set; } = new List<dynamic>();
+        public IEnumerable<PersonaLookupDTO> Propietarios { get; set; } = new List<PersonaLookupDTO>();
+        public IEnumerable<PersonaLookupDTO> Veterinarios { get; set; } = new List<PersonaLookupDTO>();
+        public IEnumerable<PersonaLookupDTO> Encargados { get; set; } = new List<PersonaLookupDTO>();
 
         public async Task OnGetAsync()
         {
@@ -78,8 +79,19 @@ namespace HipodromoNacional.Pages.Usuarios
         private async Task CargarListasAsync()
         {
             Roles = await _repo.ObtenerRolesAsync();
-            Propietarios = await _db.QueryAsync("SELECT id_propietario AS Id, nombre || ' ' || apellido1 AS Nombre FROM propietario WHERE estado = 'Activo' ORDER BY nombre");
-            Veterinarios = await _db.QueryAsync("SELECT id_veterinario AS Id, nombre || ' ' || apellido1 AS Nombre FROM veterinario WHERE estado = 'Activo' ORDER BY nombre");
+            Propietarios = await _db.QueryAsync<PersonaLookupDTO>(
+                "SELECT id_propietario AS Id, nombre || ' ' || apellido1 AS Nombre FROM propietario WHERE estado = 'Activo' ORDER BY nombre");
+            Veterinarios = await _db.QueryAsync<PersonaLookupDTO>(
+                "SELECT id_veterinario AS Id, nombre || ' ' || apellido1 AS Nombre FROM veterinario WHERE estado = 'Activo' ORDER BY nombre");
+
+            var rolEncargado = await _db.QueryFirstOrDefaultAsync<int?>(
+                "SELECT id_rol FROM rol WHERE nombre_rol = 'EncargadoEstablo'");
+            if (rolEncargado.HasValue)
+            {
+                Encargados = await _db.QueryAsync<PersonaLookupDTO>(
+                    "SELECT id_usuario AS Id, nombre AS Nombre FROM usuario WHERE id_rol = @RolId AND activo = true ORDER BY nombre",
+                    new { RolId = rolEncargado.Value });
+            }
         }
     }
 }

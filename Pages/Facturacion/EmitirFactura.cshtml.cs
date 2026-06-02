@@ -111,6 +111,7 @@ namespace HipodromoNacional.Pages.Facturacion
                     JOIN caballo c ON i.id_caballo = c.id_caballo
                     JOIN evento e ON i.id_evento = e.id_evento
                     WHERE c.id_propietario = @PropietarioId
+                      AND i.estado = 'Aprobada'
                       AND i.id_inscripcion NOT IN (SELECT id_inscripcion FROM detalle_factura)
                     ORDER BY e.nombre";
                 

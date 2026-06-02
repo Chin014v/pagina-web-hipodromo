@@ -15,7 +15,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdministradorOnly", policy => policy.RequireRole("Administrador"));
     options.AddPolicy("AdminOrVet", policy => policy.RequireRole("Administrador", "Veterinario"));
-    options.AddPolicy("AdminOrEstablo", policy => policy.RequireRole("Administrador", "Encargado de Establo"));
+    options.AddPolicy("AdminOrEstablo", policy => policy.RequireRole("Administrador", "EncargadoEstablo"));
     options.AddPolicy("AdminOrProp", policy => policy.RequireRole("Administrador", "Propietario"));
 });
 
@@ -43,7 +43,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Caballos/Eliminar", "AdministradorOnly");
     
     options.Conventions.AuthorizeFolder("/Eventos");
-    options.Conventions.AuthorizePage("/Eventos/Crear", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Eventos/Crear", "AdminOrProp");
     options.Conventions.AuthorizePage("/Eventos/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Eventos/Eliminar", "AdministradorOnly");
 
@@ -81,7 +81,6 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
     {
         options.LoginPath = "/Login";
         options.LogoutPath = "/Logout";
-        options.AccessDeniedPath = "/Error";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     });
 
@@ -114,12 +113,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+app.UseDeveloperExceptionPage();
+app.UseHsts();
 
 app.UseHttpsRedirection();
 

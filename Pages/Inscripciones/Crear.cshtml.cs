@@ -62,6 +62,11 @@ namespace HipodromoNacional.Pages.Inscripciones
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (User.IsInRole("Propietario"))
+            {
+                Inscripcion.Estado = "Pendiente";
+            }
+
             if (!ModelState.IsValid)
             {
                 await CargarListasAsync();
