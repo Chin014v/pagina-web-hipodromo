@@ -27,51 +27,114 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-page="/Index"><i class="bi bi-house-door"></i> Inicio</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Propietarios/Index"><i class="bi bi-people"></i> Propietarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Caballos/Index"><i class="bi bi-heptagon"></i> Caballos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Eventos/Index"><i class="bi bi-calendar-event"></i> Eventos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Establos/Index"><i class="bi bi-house-door-fill"></i> Establos</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFact" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-receipt"></i> Facturación
-                            </a>
-                            <ul class="dropdown-menu shadow border-0 mt-2" aria-labelledby="navbarDropdownFact">
-                                <li><a class="dropdown-item" asp-page="/Facturacion/EmitirFactura"><i class="bi bi-plus-circle me-2 text-primary"></i> Emitir Factura</a></li>
-                                <li><a class="dropdown-item" asp-page="/Facturacion/Historial"><i class="bi bi-journal-text me-2 text-secondary"></i> Historial de Facturas</a></li>
-                                <li><a class="dropdown-item" asp-page="/Estadisticas/Index"><i class="bi bi-bar-chart me-2 text-success"></i> Estadísticas y Reportes</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-grid-3x3-gap"></i> Módulos
-                            </a>
-                            <ul class="dropdown-menu shadow border-0 mt-2" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-page="/Inscripciones/Index"><i class="bi bi-pencil-square me-2 text-success"></i> Inscripciones</a></li>
-                                <li><a class="dropdown-item" asp-page="/Resultados/Index"><i class="bi bi-trophy me-2 text-primary"></i> Resultados</a></li>
-                                <li><a class="dropdown-item" asp-page="/Veterinaria/Index"><i class="bi bi-heart-pulse me-2 text-danger"></i> Historial Veterinario</a></li>
-                                <li><a class="dropdown-item" asp-page="/EstablosMgt/Index"><i class="bi bi-box-seam me-2 text-info"></i> Suministros y Alimentación</a></li>
-                                <li><a class="dropdown-item" asp-page="/Razas/Index"><i class="bi bi-bookmark-fill me-2 text-warning"></i> Razas de Caballos</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-page="/Alertas/Index"><i class="bi bi-bell me-2 text-warning"></i> Alertas Sanitarias</a></li>
-                                <li><a class="dropdown-item" asp-page="/Auditoria/Index"><i class="bi bi-shield-lock me-2 text-secondary"></i> Bitácora de Auditoría</a></li>
-                                <li><a class="dropdown-item" asp-page="/Usuarios/Index"><i class="bi bi-person-gear me-2 text-dark"></i> Control de Usuarios</a></li>
-                            </ul>
-                        </li>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Propietarios/Index"><i class="bi bi-people"></i> Propietarios</a>
+                            </li>
+                        }
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Caballos/Index"><i class="bi bi-heptagon"></i> Caballos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Eventos/Index"><i class="bi bi-calendar-event"></i> Eventos</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Encargado de Establo"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Establos/Index"><i class="bi bi-house-door-fill"></i> Establos</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Propietario"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFact" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-receipt"></i> Facturación
+                                </a>
+                                <ul class="dropdown-menu shadow border-0 mt-2" aria-labelledby="navbarDropdownFact">
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/Facturacion/EmitirFactura"><i class="bi bi-plus-circle me-2 text-primary"></i> Emitir Factura</a></li>
+                                    }
+                                    <li><a class="dropdown-item" asp-page="/Facturacion/Historial"><i class="bi bi-journal-text me-2 text-secondary"></i> Historial de Facturas</a></li>
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/Estadisticas/Index"><i class="bi bi-bar-chart me-2 text-success"></i> Estadísticas y Reportes</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-grid-3x3-gap"></i> Módulos
+                                </a>
+                                <ul class="dropdown-menu shadow border-0 mt-2" aria-labelledby="navbarDropdown">
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Propietario"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/Inscripciones/Index"><i class="bi bi-pencil-square me-2 text-success"></i> Inscripciones</a></li>
+                                    }
+                                    <li><a class="dropdown-item" asp-page="/Resultados/Index"><i class="bi bi-trophy me-2 text-primary"></i> Resultados</a></li>
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Veterinario"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/Veterinaria/Index"><i class="bi bi-heart-pulse me-2 text-danger"></i> Historial Veterinario</a></li>
+                                    }
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Encargado de Establo"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/EstablosMgt/Index"><i class="bi bi-box-seam me-2 text-info"></i> Suministros y Alimentación</a></li>
+                                    }
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/Razas/Index"><i class="bi bi-bookmark-fill me-2 text-warning"></i> Razas de Caballos</a></li>
+                                    }
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Veterinario"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-page="/Alertas/Index"><i class="bi bi-bell me-2 text-warning"></i> Alertas Sanitarias</a></li>
+                                    }
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <li><a class="dropdown-item" asp-page="/Auditoria/Index"><i class="bi bi-shield-lock me-2 text-secondary"></i> Bitácora de Auditoría</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Usuarios/Index"><i class="bi bi-person-gear me-2 text-dark"></i> Control de Usuarios</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <span class="nav-link text-white font-weight-bold">
-                                <i class="bi bi-person-circle text-warning"></i> admin <span class="badge bg-warning text-dark ms-1">Administrador</span>
-                            </span>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-white font-weight-bold">
+                                    <i class="bi bi-person-circle text-warning"></i> @User.Identity.Name
+                                    @{
+                                        var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "";
+                                        var badgeClass = userRole switch
+                                        {
+                                            "Administrador" => "bg-warning text-dark",
+                                            "Veterinario" => "bg-danger text-white",
+                                            "Propietario" => "bg-success text-white",
+                                            "Encargado de Establo" => "bg-info text-white",
+                                            _ => "bg-secondary text-white"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass ms-1">@userRole</span>
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-page="/Logout"><i class="bi bi-box-arrow-right"></i> Salir</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-page="/Login"><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

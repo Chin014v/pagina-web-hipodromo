@@ -4,9 +4,11 @@ using HipodromoNacional.Modelos;
 using HipodromoNacional.Repositorios;
 using System.Data;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HipodromoNacional.Pages.Inscripciones
 {
+    [Authorize(Roles = "Administrador,Propietario")]
     public class CrearModel : PageModel
     {
         private readonly IInscripcionRepositorio _repo;
@@ -29,8 +31,19 @@ namespace HipodromoNacional.Pages.Inscripciones
             var eventos = await _db.QueryAsync<EventoDTO>("SELECT id_evento AS IdEvento, codigo_evento AS CodigoEvento, nombre AS Nombre FROM evento WHERE estado IN ('Programado','EnCurso') ORDER BY nombre");
             Eventos = eventos.ToList();
 
-            var caballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, codigo_unico AS CodigoUnico, nombre AS Nombre FROM caballo ORDER BY nombre");
-            Caballos = caballos.ToList();
+            if (User.IsInRole("Propietario"))
+            {
+                var claim = User.FindFirst("PropietarioId");
+                if (claim != null && int.TryParse(claim.Value, out int idProp))
+                {
+                    var caballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, codigo_unico AS CodigoUnico, nombre AS Nombre FROM caballo WHERE id_propietario = @IdProp ORDER BY nombre", new { IdProp = idProp });
+                    Caballos = caballos.ToList();
+                    return;
+                }
+            }
+
+            var allCaballos = await _db.QueryAsync<CaballoDTO>("SELECT id_caballo AS IdCaballo, codigo_unico AS CodigoUnico, nombre AS Nombre FROM caballo ORDER BY nombre");
+            Caballos = allCaballos.ToList();
         }
 
         public async Task OnGetAsync()

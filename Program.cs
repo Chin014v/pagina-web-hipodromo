@@ -9,8 +9,59 @@ SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdministradorOnly", policy => policy.RequireRole("Administrador"));
+    options.AddPolicy("AdminOrVet", policy => policy.RequireRole("Administrador", "Veterinario"));
+    options.AddPolicy("AdminOrEstablo", policy => policy.RequireRole("Administrador", "Encargado de Establo"));
+    options.AddPolicy("AdminOrProp", policy => policy.RequireRole("Administrador", "Propietario"));
+});
+
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/Auditoria", "AdministradorOnly");
+    options.Conventions.AuthorizeFolder("/Usuarios", "AdministradorOnly");
+    options.Conventions.AuthorizeFolder("/Propietarios", "AdministradorOnly");
+    options.Conventions.AuthorizeFolder("/Razas", "AdministradorOnly");
+    
+    options.Conventions.AuthorizeFolder("/Alertas", "AdminOrVet");
+    options.Conventions.AuthorizeFolder("/Veterinaria", "AdminOrVet");
+    
+    options.Conventions.AuthorizeFolder("/EstablosMgt", "AdminOrEstablo");
+    options.Conventions.AuthorizeFolder("/EstablosMgt/Beneficios", "AdministradorOnly");
+    
+    options.Conventions.AuthorizeFolder("/Establos", "AdminOrEstablo");
+    options.Conventions.AuthorizePage("/Establos/Crear", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Establos/Editar", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Establos/Eliminar", "AdministradorOnly");
+    
+    options.Conventions.AuthorizeFolder("/Caballos");
+    options.Conventions.AuthorizePage("/Caballos/Crear", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Caballos/Editar", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Caballos/Eliminar", "AdministradorOnly");
+    
+    options.Conventions.AuthorizeFolder("/Eventos");
+    options.Conventions.AuthorizePage("/Eventos/Crear", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Eventos/Editar", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Eventos/Eliminar", "AdministradorOnly");
+
+    options.Conventions.AuthorizeFolder("/Resultados");
+    options.Conventions.AuthorizePage("/Resultados/Crear", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Resultados/Editar", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Resultados/Eliminar", "AdministradorOnly");
+
+    options.Conventions.AuthorizeFolder("/Inscripciones");
+    options.Conventions.AuthorizePage("/Inscripciones/Crear", "AdminOrProp");
+    options.Conventions.AuthorizePage("/Inscripciones/Editar", "AdminOrProp");
+    options.Conventions.AuthorizePage("/Inscripciones/Eliminar", "AdministradorOnly");
+    
+    options.Conventions.AuthorizePage("/Facturacion/EmitirFactura", "AdministradorOnly");
+    options.Conventions.AuthorizePage("/Facturacion/Historial", "AdminOrProp");
+    options.Conventions.AuthorizePage("/Facturacion/Detalle", "AdminOrProp");
+    options.Conventions.AuthorizeFolder("/Estadisticas", "AdministradorOnly");
+});
 
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 builder.Services.AddScoped<IDbConnection>(sp =>
