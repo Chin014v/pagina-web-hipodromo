@@ -17,7 +17,10 @@
         <a asp-page="/EstablosMgt/Index" class="btn btn-outline-secondary me-3"><i class="bi bi-arrow-left"></i> Regresar</a>
         <h2 class="mb-0"><i class="bi bi-box"></i> Suministros</h2>
     </div>
-    <a asp-page="./Crear" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nuevo Suministro</a>
+    @if (User.IsInRole("EncargadoEstablo"))
+    {
+        <a asp-page="./Crear" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nuevo Suministro</a>
+    }
 </div>
 
 <div class="table-responsive">
@@ -31,7 +34,10 @@
                 <th>Cantidad</th>
                 <th>Unidad</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                @if (User.IsInRole("EncargadoEstablo"))
+                {
+                    <th>Acciones</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -54,10 +60,13 @@
                             <span class="badge bg-secondary">@item.Estado</span>
                         }
                     </td>
-                    <td>
-                        <a asp-page="./Editar" asp-route-id="@item.IdSuministro" class="btn btn-sm btn-outline-warning" title="Editar"><i class="bi bi-pencil"></i></a>
-                        <a asp-page="./Eliminar" asp-route-id="@item.IdSuministro" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
-                    </td>
+                    @if (User.IsInRole("EncargadoEstablo"))
+                    {
+                        <td>
+                            <a asp-page="./Editar" asp-route-id="@item.IdSuministro" class="btn btn-sm btn-outline-warning" title="Editar"><i class="bi bi-pencil"></i></a>
+                            <a asp-page="./Eliminar" asp-route-id="@item.IdSuministro" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

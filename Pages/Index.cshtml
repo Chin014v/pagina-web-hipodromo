@@ -116,7 +116,7 @@
                     </div>
                 }
                 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Propietario") || User.IsInRole("EncargadoEstablo"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("Propietario") || User.IsInRole("EncargadoEstablo") || User.IsInRole("Veterinario"))
                 {
                     <div class="col-md-6 mb-3">
                         <div class="card h-100 dashboard-module-card">
@@ -127,7 +127,10 @@
                             </div>
                         </div>
                     </div>
+                }
 
+                @if (User.IsInRole("Administrador") || User.IsInRole("Propietario"))
+                {
                     <div class="col-md-6 mb-3">
                         <div class="card h-100 dashboard-module-card">
                             <div class="card-body">
@@ -198,7 +201,7 @@
             </div>
             
             <div class="row">
-                @if (User.IsInRole("Administrador") || User.IsInRole("Propietario") || User.IsInRole("EncargadoEstablo"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("Propietario"))
                 {
                     <div class="col-md-6 mb-3">
                         <div class="card h-100 dashboard-module-card">

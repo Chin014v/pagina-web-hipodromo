@@ -27,9 +27,10 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOrProp", policy => policy.RequireRole("Administrador", "Propietario"));
     options.AddPolicy("PropietarioOnly", policy => policy.RequireRole("Propietario"));
     options.AddPolicy("EstabloOnly", policy => policy.RequireRole("EncargadoEstablo"));
-    options.AddPolicy("CaballosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
-    options.AddPolicy("EventosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
-    options.AddPolicy("ResultadosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo"));
+    options.AddPolicy("VeterinarioOnly", policy => policy.RequireRole("Veterinario"));
+    options.AddPolicy("CaballosPolicy", policy => policy.RequireRole("Administrador", "Propietario", "EncargadoEstablo", "Veterinario"));
+    options.AddPolicy("EventosPolicy", policy => policy.RequireRole("Administrador", "Propietario"));
+    options.AddPolicy("ResultadosPolicy", policy => policy.RequireRole("Administrador", "Propietario"));
 });
 
 builder.Services.AddRazorPages(options =>
@@ -41,12 +42,24 @@ builder.Services.AddRazorPages(options =>
     
     options.Conventions.AuthorizeFolder("/Alertas", "AdminOrVet");
     options.Conventions.AuthorizeFolder("/Veterinaria", "AdminOrVet");
+    options.Conventions.AuthorizePage("/Veterinaria/Crear", "VeterinarioOnly");
+    options.Conventions.AuthorizePage("/Veterinaria/Editar", "VeterinarioOnly");
+    options.Conventions.AuthorizePage("/Veterinaria/Eliminar", "VeterinarioOnly");
     
     options.Conventions.AuthorizeFolder("/EstablosMgt", "AdminOrEstablo");
     options.Conventions.AuthorizeFolder("/EstablosMgt/Beneficios", "AdministradorOnly");
     options.Conventions.AuthorizePage("/EstablosMgt/Asignacion/Crear", "EstabloOnly");
     options.Conventions.AuthorizePage("/EstablosMgt/Asignacion/Editar", "EstabloOnly");
     options.Conventions.AuthorizePage("/EstablosMgt/Asignacion/Eliminar", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Alimentacion/Crear", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Alimentacion/Editar", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Alimentacion/Eliminar", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Suministros/Crear", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Suministros/Editar", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Suministros/Eliminar", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Proveedores/Crear", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Proveedores/Editar", "EstabloOnly");
+    options.Conventions.AuthorizePage("/EstablosMgt/Proveedores/Eliminar", "EstabloOnly");
     
     options.Conventions.AuthorizeFolder("/Establos", "AdminOrEstablo");
     options.Conventions.AuthorizePage("/Establos/Crear", "AdministradorOnly");
@@ -54,7 +67,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Establos/Eliminar", "AdministradorOnly");
     
     options.Conventions.AuthorizeFolder("/Caballos", "CaballosPolicy");
-    options.Conventions.AuthorizePage("/Caballos/Crear", "AdminOrProp");
+    options.Conventions.AuthorizePage("/Caballos/Crear", "PropietarioOnly");
     options.Conventions.AuthorizePage("/Caballos/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Caballos/Eliminar", "AdministradorOnly");
     
@@ -68,7 +81,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Resultados/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Resultados/Eliminar", "AdministradorOnly");
 
-    options.Conventions.AuthorizeFolder("/Inscripciones");
+    options.Conventions.AuthorizeFolder("/Inscripciones", "AdminOrProp");
     options.Conventions.AuthorizePage("/Inscripciones/Crear", "PropietarioOnly");
     options.Conventions.AuthorizePage("/Inscripciones/Editar", "AdministradorOnly");
     options.Conventions.AuthorizePage("/Inscripciones/Eliminar", "AdministradorOnly");

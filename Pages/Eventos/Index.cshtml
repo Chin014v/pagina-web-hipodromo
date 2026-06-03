@@ -33,7 +33,10 @@
                 <th>Tipo</th>
                 <th>Distancia</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <th>Acciones</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -67,13 +70,13 @@
                             <span class="badge bg-secondary">@e.Estado</span>
                         }
                     </td>
-                    <td>
-                        @if (User.IsInRole("Administrador"))
-                        {
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <td>
                             <a asp-page="./Editar" asp-route-id="@e.IdEvento" class="btn btn-sm btn-outline-warning" title="Editar"><i class="bi bi-pencil"></i></a>
                             <a asp-page="./Eliminar" asp-route-id="@e.IdEvento" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
-                        }
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
