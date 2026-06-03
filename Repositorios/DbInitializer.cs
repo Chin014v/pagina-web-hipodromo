@@ -40,6 +40,25 @@ namespace HipodromoNacional.Repositorios
                     Console.WriteLine($"ADVERTENCIA: No se encontró el script SQL en: {scriptPath}");
                 }
 
+                // Ejecución automática de las vistas (Punto 2.8)
+                string viewsScriptPath = Path.Combine(rootDir, "10_crear_vistas.sql");
+                if (!File.Exists(viewsScriptPath))
+                {
+                    viewsScriptPath = Path.Combine(contentRootPath, "10_crear_vistas.sql");
+                }
+
+                if (File.Exists(viewsScriptPath))
+                {
+                    Console.WriteLine($"Leyendo script de vistas desde: {viewsScriptPath}");
+                    string viewsSql = File.ReadAllText(viewsScriptPath);
+                    db.Execute(viewsSql);
+                    Console.WriteLine("Script de vistas ejecutado exitosamente en Render Postgres.");
+                }
+                else
+                {
+                    Console.WriteLine($"ADVERTENCIA: No se encontró el script de vistas en: {viewsScriptPath}");
+                }
+
                 // Comprobar división territorial de Costa Rica
                 int countBarrios = 0;
                 try
