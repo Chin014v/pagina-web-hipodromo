@@ -22,6 +22,15 @@ namespace HipodromoNacional.Pages.Facturacion
             Factura = await _repo.ObtenerFacturaDetalleAsync(id);
             if (Factura == null) return NotFound();
 
+            if (User.IsInRole("Propietario"))
+            {
+                var claim = User.FindFirst("PropietarioId");
+                if (claim == null || !int.TryParse(claim.Value, out int idProp) || Factura.IdPropietario != idProp)
+                {
+                    return NotFound();
+                }
+            }
+
             return Page();
         }
     }

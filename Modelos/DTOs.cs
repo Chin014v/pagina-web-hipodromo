@@ -144,6 +144,7 @@ namespace HipodromoNacional.Modelos
     {
         public int IdFactura { get; set; }
         public string? CodigoFactura { get; set; }
+        public int IdPropietario { get; set; }
         public string? ClienteNombre { get; set; }
         public string? ClienteCedula { get; set; }
         public string? EventoNombre { get; set; }

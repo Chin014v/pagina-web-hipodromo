@@ -40,6 +40,7 @@ namespace HipodromoNacional.Repositorios
                 SELECT 
                     f.id_factura AS IdFactura,
                     f.codigo_factura AS CodigoFactura,
+                    f.id_propietario AS IdPropietario,
                     p.nombre || ' ' || p.apellido1 || ' ' || COALESCE(p.apellido2, '') AS ClienteNombre,
                     p.cedula AS ClienteCedula,
                     e.nombre AS EventoNombre,

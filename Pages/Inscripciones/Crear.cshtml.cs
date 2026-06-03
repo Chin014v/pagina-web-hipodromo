@@ -74,6 +74,20 @@ namespace HipodromoNacional.Pages.Inscripciones
                 ModelState.AddModelError("Inscripcion.IdCaballo", "El caballo seleccionado no está apto o se encuentra en revisión (Tratamiento/No Apto).");
             }
 
+            // Check that the selected horse belongs to the logged-in owner
+            if (User.IsInRole("Propietario"))
+            {
+                var claim = User.FindFirst("PropietarioId");
+                if (claim != null && int.TryParse(claim.Value, out int idProp))
+                {
+                    var ownerId = await _db.ExecuteScalarAsync<int?>("SELECT id_propietario FROM caballo WHERE id_caballo = @IdCaballo", new { IdCaballo = Inscripcion.IdCaballo });
+                    if (ownerId != idProp)
+                    {
+                        ModelState.AddModelError("Inscripcion.IdCaballo", "El caballo seleccionado no le pertenece.");
+                    }
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 await CargarListasAsync();
